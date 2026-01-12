@@ -1,0 +1,14 @@
+feat: 優化匯出 UI 與下載驗證 (UX Improvements)
+
+詳細變更內容：
+
+1.  **分離匯出區塊 (Separate Export Panel)**：
+    - 將「下載」按鈕從「辨識結果」區塊移至獨立的「匯出文件」面板 (`templates/index.html`)。
+    - 提升操作介面的清晰度，區分編輯與輸出動作。
+
+2.  **下載防呆 (Download Validation)**：
+    - 新增 `hasModifications` 狀態追蹤 (`static/js/editor.js`)。
+    - 點擊下載時，若無任何編輯紀錄，彈出提示視窗「沒有任何修改，無需下載」，避免產生無效文件。
+
+3.  **狀態邏輯更新**：
+    - 只有在用戶成功執行「套用修改」後，才會標記為可下載狀態。

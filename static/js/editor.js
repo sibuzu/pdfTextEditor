@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPages = []; // Paths to images
     let pageData = {}; // Key: pageIndex, Value: { blocks: [], analyzed: false }
     let currentSelection = null; // { pageIndex, blockId }
+    let hasModifications = false;
 
     // Upload Handler
     uploadZone.addEventListener('click', () => fileInput.click());
@@ -233,8 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 window.renderRestoreBtn(pageIndex);
 
-                // Also update download button logic (still kept)
-                downloadBtn.disabled = false;
+                // Update modification flag
+                hasModifications = true;
             } else {
                 alert('Apply failed: ' + data.detail);
             }
@@ -298,6 +299,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     downloadBtn.addEventListener('click', async () => {
+        if (!hasModifications) {
+            alert('沒有任何修改，無需下載。\n(No modifications made.)');
+            return;
+        }
+
         downloadBtn.textContent = 'Generating...';
         downloadBtn.disabled = true;
 

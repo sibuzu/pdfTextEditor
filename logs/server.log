@@ -278,3 +278,89 @@ AttributeError: 'function' object has no attribute 'create_pdf'
 2026-01-12 14:50:49,711 - uvicorn.access - INFO - 127.0.0.1:10188 - "GET /tmp/78caf218-8fed-4dbe-8a90-dfb28d73818d/page_12.png HTTP/1.1" 200
 2026-01-12 14:50:49,720 - uvicorn.access - INFO - 127.0.0.1:10188 - "GET /tmp/78caf218-8fed-4dbe-8a90-dfb28d73818d/page_13.png HTTP/1.1" 200
 2026-01-12 14:50:49,729 - uvicorn.access - INFO - 127.0.0.1:10188 - "GET /tmp/78caf218-8fed-4dbe-8a90-dfb28d73818d/page_14.png HTTP/1.1" 200
+2026-01-12 15:13:53,926 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 15:13:53,960 - uvicorn.error - INFO - Started server process [51212]
+2026-01-12 15:13:53,960 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 15:13:53,961 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 15:13:53,961 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 15:13:57,477 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET / HTTP/1.1" 200
+2026-01-12 15:13:57,489 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /static/css/style.css?v=20260111c HTTP/1.1" 304
+2026-01-12 15:13:57,494 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /static/js/editor.js HTTP/1.1" 304
+2026-01-12 15:14:01,181 - execution.process_pdf - INFO - Converting PDF: .tmp\7d62ca6a-928f-4158-9b65-8cfc111f605c\input.pdf to images in .tmp\7d62ca6a-928f-4158-9b65-8cfc111f605c
+2026-01-12 15:14:05,133 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 15:14:05,135 - uvicorn.access - INFO - 127.0.0.1:4264 - "POST /upload HTTP/1.1" 200
+2026-01-12 15:14:05,140 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_0.png HTTP/1.1" 200
+2026-01-12 15:14:05,140 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_1.png HTTP/1.1" 200
+2026-01-12 15:14:05,154 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_2.png HTTP/1.1" 200
+2026-01-12 15:14:05,155 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_3.png HTTP/1.1" 200
+2026-01-12 15:14:05,169 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_4.png HTTP/1.1" 200
+2026-01-12 15:14:05,171 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_5.png HTTP/1.1" 200
+2026-01-12 15:14:05,183 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_6.png HTTP/1.1" 200
+2026-01-12 15:14:05,184 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_7.png HTTP/1.1" 200
+2026-01-12 15:14:05,198 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_9.png HTTP/1.1" 200
+2026-01-12 15:14:05,199 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_8.png HTTP/1.1" 200
+2026-01-12 15:14:05,214 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_10.png HTTP/1.1" 200
+2026-01-12 15:14:05,215 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_11.png HTTP/1.1" 200
+2026-01-12 15:14:05,228 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_13.png HTTP/1.1" 200
+2026-01-12 15:14:05,228 - uvicorn.access - INFO - 127.0.0.1:4264 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_12.png HTTP/1.1" 200
+2026-01-12 15:14:05,241 - uvicorn.access - INFO - 127.0.0.1:10622 - "GET /tmp/7d62ca6a-928f-4158-9b65-8cfc111f605c/page_14.png HTTP/1.1" 200
+2026-01-12 15:15:53,581 - uvicorn.error - ERROR - Exception in ASGI application
+Traceback (most recent call last):
+  File "D:\git\antigravity\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\git\antigravity\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\git\antigravity\pdfTextEditor\server.py", line 142, in generate_pdf
+    output_path = generate_pdf.create_pdf(session_dir, request.modifications)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'function' object has no attribute 'create_pdf'
