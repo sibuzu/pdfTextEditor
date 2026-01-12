@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSelection = null;
     let activePageIndex = null;
 
-    // Icons
     const ICONS = {
         restore: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
         eye: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
@@ -108,19 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(`magBtn-${index}`).onclick = () => toggleMagnifier(index);
 
             const img = document.getElementById(`pageImg-${index}`);
-            // CLICK PAGE: Activate Page AND Deselect Blocks
-            img.addEventListener('click', () => {
-                setActivePage(index);
-                deselectAll();
-            });
+            img.addEventListener('click', () => setActivePage(index));
         });
 
         const globalToggle = document.getElementById('toggleBoxesBtn');
         if (globalToggle) globalToggle.style.display = 'none';
 
+        // Disable Controls initially
         setEditPanelEnabled(false);
     }
 
+    // Helper: Enable/Disable Edit Panel
     function setEditPanelEnabled(enabled) {
         selectedInput.disabled = !enabled;
         document.getElementById('fontFamilySelect').disabled = !enabled;
@@ -129,51 +126,38 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('boldCheckbox').disabled = !enabled;
         document.getElementById('italicCheckbox').disabled = !enabled;
         applyEditBtn.disabled = !enabled;
-        if (undoEditBtn) undoEditBtn.disabled = !enabled;
+        if (undoEditBtn) undoEditBtn.disabled = !enabled; // Block level undo
 
         if (!enabled) {
             selectedInput.value = '';
+            // Don't clear styles, just disable? Or clearer to reset?
+            // Resetting looks cleaner.
             document.getElementById('fontSizeInput').value = '';
-            // Reset Color to black to look neutral
-            document.getElementById('textColorInput').value = '#000000';
-            updateUndoButtonState(false);
         }
     }
 
-    // Set Active Page only (Toolbar Logic)
+    // Set Active Page (Show Toolbar & Update Right Panel)
     function setActivePage(index) {
-        if (activePageIndex === index) {
-            // Even if same page, ensure toolbar is visible (should be)
-            // No early return? 
-            // We might want to toggle magnifier off if clicking background?
-            // Let's keep toolbar logic idempotent.
-        } else {
-            // Switching Pages
-            if (activePageIndex !== null) {
-                const prevToolbar = document.getElementById(`toolbar-${activePageIndex}`);
-                if (prevToolbar) prevToolbar.style.visibility = 'hidden';
-                if (pageData[activePageIndex].magnifier) toggleMagnifier(activePageIndex, false);
-            }
+        if (activePageIndex !== null && activePageIndex !== index) {
+            const prevToolbar = document.getElementById(`toolbar-${activePageIndex}`);
+            if (prevToolbar) prevToolbar.style.visibility = 'hidden';
+            if (pageData[activePageIndex].magnifier) toggleMagnifier(activePageIndex, false);
+
+            // Deselect active block if switching pages
+            document.querySelectorAll('.bbox.selected').forEach(el => el.classList.remove('selected'));
+            currentSelection = null;
         }
 
         activePageIndex = index;
         const toolbar = document.getElementById(`toolbar-${index}`);
         if (toolbar) toolbar.style.visibility = 'visible';
 
-        // Update Panel Base Info (Count)
-        // If we deselect, we still want to show page count
+        // Update Panel Info
         const count = pageData[index] ? pageData[index].blocks.length : 0;
         document.getElementById('regionCount').textContent = `[Page ${index + 1}] ${count} 個文字區域`;
-    }
+        document.getElementById('selectedId').textContent = '#'; // No block selected
 
-    // Deselect All Blocks & Update UI to "Page Selected" state
-    function deselectAll() {
-        document.querySelectorAll('.bbox.selected').forEach(el => el.classList.remove('selected'));
-        currentSelection = null;
-
-        document.getElementById('selectedId').textContent = '#';
-
-        // Show panel, but set to disabled state matching "Background Click"
+        // Show Panel but Disable controls (Waiting for block selection)
         selectedEdit.style.display = 'block';
         setEditPanelEnabled(false);
     }
@@ -198,8 +182,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 pageData[pageIndex].analyzed = true;
                 btnContainer.style.display = 'none';
                 renderBBoxes(pageIndex);
+
+                // Refresh Panel Info
                 document.getElementById('regionCount').textContent = `[Page ${pageIndex + 1}] ${data.blocks.length} 個文字區域`;
-                deselectAll(); // Ensure clean state after analyze
             } else {
                 alert('Analysis failed');
                 btn.textContent = "重試分析";
@@ -247,15 +232,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 div.style.top = (block.bbox[1] * scaleY) + 'px';
                 div.style.width = (block.bbox[2] * scaleX) + 'px';
                 div.style.height = (block.bbox[3] * scaleY) + 'px';
-                div.style.pointerEvents = 'auto';
+                div.style.pointerEvents = 'auto'; // Re-enable clicks
                 div.dataset.id = block.id;
                 div.title = block.text;
 
                 div.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    // If magnifier is on?
-                    // We allow selection even with magnifier.
 
+                    // If magnifier is on, TURN IT OFF on click
+                    if (pageData[pageIndex].magnifier) {
+                        toggleMagnifier(pageIndex, false);
+                    }
+
+                    // Crucial: Set active page first (updates panel base state), then select block.
                     setActivePage(pageIndex);
                     selectBlock(pageIndex, block.id, div);
                 });
@@ -307,6 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
+                // Keep lens inside wrapper mostly, or allow intersection.
                 lens.style.left = (x - lensSize / 2) + 'px';
                 lens.style.top = (y - lensSize / 2) + 'px';
 
@@ -316,11 +306,18 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             wrapper.onmousemove = moveHandler;
+
+            // Add click listener to wrapper to turn off magnifier
+            wrapper.onclick = (e) => {
+                toggleMagnifier(pageIndex, false);
+            };
+
         } else {
             btn.classList.remove('active');
             lens.style.display = 'none';
             wrapper.style.cursor = 'default';
             wrapper.onmousemove = null;
+            wrapper.onclick = null; // Clean up listener
         }
     }
 
@@ -514,4 +511,11 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadBtn.disabled = false;
         }
     });
+
+    // Remove legacy toggle button handler if it remained
+    const oldToggle = document.getElementById('toggleBoxesBtn');
+    if (oldToggle) {
+        oldToggle.replaceWith(oldToggle.cloneNode(true)); // remove listeners and hide
+        document.getElementById('toggleBoxesBtn').style.display = 'none';
+    }
 });
