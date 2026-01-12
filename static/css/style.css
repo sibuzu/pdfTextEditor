@@ -237,12 +237,24 @@ h1 a {
     gap: 1rem;
 }
 
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #334155;
+    min-height: 32px; 
+    flex-wrap: nowrap; /* Prevent wrapping */
+}
+
 .selected-input {
     width: 100%;
     padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
-    margin: 1rem 0;
+    margin: 0.25rem 0 1rem 0; /* Reduced top margin */
     font-family: inherit;
     resize: vertical;
 }
