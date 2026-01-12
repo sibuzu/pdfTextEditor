@@ -24,7 +24,7 @@
                 <h1>
                     <a href="/" class="logo-link" title="回到首頁" data-i18n="header.title">
                         NotebookLM 簡報編輯器
-                        <span class="version-tag">Ver. 2026.01.12.1605</span>
+                        <span class="version-tag">Ver. 2026.01.12.1722</span>
                     </a>
                 </h1>
                 <p class="subtitle" data-i18n="header.subtitle">上傳 PDF → 編輯文字 → 下載結果</p>
@@ -101,19 +101,31 @@
                             <div class="edit-controls">
                                 <!-- Font Family -->
                                 <div class="control-group">
-                                    <label>字體 (Font)</label>
+                                    <label>Font</label>
                                     <select id="fontFamilySelect">
-                                        <option value="NotoSansTC">Noto Sans TC (預設)</option>
-                                        <option value="Roboto">Roboto</option>
-                                        <option value="OpenSans">Open Sans</option>
-                                        <option value="jf-openhuninn">jf-openhuninn</option>
+                                        <option value="NotoSansTC">Noto Sans TC (預設/繁中)</option>
+                                        <option value="NotoSansSC">Noto Sans SC (簡中)</option>
+                                        <option value="NotoSansJP">Noto Sans JP (日文)</option>
+                                        <option value="NotoSerifTC">Noto Serif TC (宋體/繁中)</option>
+                                        <option value="NotoSerif">Noto Serif (英文)</option>
+                                        <option value="Roboto">Roboto (英文)</option>
+                                        <option value="OpenSans">Open Sans (英文)</option>
+                                        <option value="Tinos">Tinos (Serif style)</option>
+                                        <option value="jf-openhuninn">jf-openhuninn (粉圓體)</option>
                                     </select>
                                 </div>
 
-                                <!-- Font Size -->
-                                <div class="control-group">
-                                    <label>大小 (Size)</label>
-                                    <input type="number" id="fontSizeInput" placeholder="Auto" min="8" max="100">
+                                <!-- Size & Color Row -->
+                                <div class="control-row" style="display: flex; gap: 1rem;">
+                                    <div class="control-group" style="flex: 1;">
+                                        <label>Size</label>
+                                        <input type="number" id="fontSizeInput" placeholder="Auto" min="8" max="100">
+                                    </div>
+                                    <div class="control-group" style="flex: 1;">
+                                        <label>Color</label>
+                                        <input type="color" id="textColorInput" value="#000000"
+                                            style="width: 100%; height: 38px; padding: 2px;">
+                                    </div>
                                 </div>
 
                                 <!-- Styles -->

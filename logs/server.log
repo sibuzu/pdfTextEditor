@@ -442,3 +442,42 @@ AttributeError: 'function' object has no attribute 'create_pdf'
 2026-01-12 16:38:31,792 - uvicorn.access - INFO - 127.0.0.1:4267 - "GET /tmp/b5e463f7-dc97-4486-896e-83f8bb91d614/page_12.png HTTP/1.1" 200
 2026-01-12 16:38:31,804 - uvicorn.access - INFO - 127.0.0.1:7915 - "GET /tmp/b5e463f7-dc97-4486-896e-83f8bb91d614/page_14.png HTTP/1.1" 200
 2026-01-12 16:38:53,322 - execution.editor_engine - WARNING - No backup found for .tmp\b5e463f7-dc97-4486-896e-83f8bb91d614\page_0.png, cannot restore.
+2026-01-12 16:43:25,118 - execution.editor_engine - WARNING - No backup found for .tmp\4e60df1a-1a70-4f2a-9bd3-5640495c5f34\page_0.png, cannot restore.
+2026-01-12 16:53:16,770 - execution.editor_engine - WARNING - No backup found for .tmp\55889e35-7b77-49e5-8b1e-924fab494af0\page_0.png, cannot restore.
+2026-01-12 16:53:43,061 - execution.editor_engine - WARNING - No backup found for .tmp\55889e35-7b77-49e5-8b1e-924fab494af0\page_1.png, cannot restore.
+2026-01-12 17:06:31,349 - execution.editor_engine - WARNING - No backup found for .tmp\32e7e10c-b6ac-4350-b940-b047b6388fcf\page_1.png, cannot restore.
+2026-01-12 17:07:47,676 - execution.editor_engine - WARNING - No backup found for .tmp\32e7e10c-b6ac-4350-b940-b047b6388fcf\page_4.png, cannot restore.
+2026-01-12 17:09:18,317 - execution.editor_engine - WARNING - No backup found for .tmp\32e7e10c-b6ac-4350-b940-b047b6388fcf\page_9.png, cannot restore.
+2026-01-12 17:15:39,314 - execution.editor_engine - WARNING - No backup found for .tmp\f197cac8-fae5-4015-ab01-2d4568bc3862\page_0.png, cannot restore.
+2026-01-12 17:24:28,194 - execution.editor_engine - WARNING - No backup found for .tmp\c4c20b26-9a48-4a8a-b9b9-47959c2bb8a0\page_0.png, cannot restore.
+2026-01-12 17:29:44,111 - execution.editor_engine - WARNING - No backup found for .tmp\b081abf4-0fe0-48e5-8f54-e26a4a69dd53\page_2.png, cannot restore.
+2026-01-12 17:35:05,463 - execution.editor_engine - WARNING - No backup found for .tmp\b081abf4-0fe0-48e5-8f54-e26a4a69dd53\page_0.png, cannot restore.
+2026-01-12 17:39:28,430 - execution.editor_engine - WARNING - No backup found for .tmp\baf76b98-3e41-4873-89c3-a26d4371b678\page_0.png, cannot restore.
+2026-01-12 17:40:21,478 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 17:40:21,517 - uvicorn.error - INFO - Started server process [56936]
+2026-01-12 17:40:21,518 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 17:40:21,518 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 17:40:21,518 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 17:40:25,823 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET / HTTP/1.1" 200
+2026-01-12 17:40:25,850 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /static/js/editor.js HTTP/1.1" 304
+2026-01-12 17:40:29,199 - execution.process_pdf - INFO - Converting PDF: .tmp\b3bb3377-627a-4209-909f-697d5cb11d12\input.pdf to images in .tmp\b3bb3377-627a-4209-909f-697d5cb11d12
+2026-01-12 17:40:33,177 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 17:40:33,178 - uvicorn.access - INFO - 127.0.0.1:11673 - "POST /upload HTTP/1.1" 200
+2026-01-12 17:40:33,184 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_1.png HTTP/1.1" 200
+2026-01-12 17:40:33,184 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_0.png HTTP/1.1" 200
+2026-01-12 17:40:33,200 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_8.png HTTP/1.1" 200
+2026-01-12 17:40:33,201 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_9.png HTTP/1.1" 200
+2026-01-12 17:40:33,212 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_6.png HTTP/1.1" 200
+2026-01-12 17:40:33,212 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_7.png HTTP/1.1" 200
+2026-01-12 17:40:33,226 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_2.png HTTP/1.1" 200
+2026-01-12 17:40:33,226 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_3.png HTTP/1.1" 200
+2026-01-12 17:40:33,240 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_4.png HTTP/1.1" 200
+2026-01-12 17:40:33,240 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_5.png HTTP/1.1" 200
+2026-01-12 17:40:33,255 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_10.png HTTP/1.1" 200
+2026-01-12 17:40:33,255 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_11.png HTTP/1.1" 200
+2026-01-12 17:40:33,269 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_13.png HTTP/1.1" 200
+2026-01-12 17:40:33,269 - uvicorn.access - INFO - 127.0.0.1:6386 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_12.png HTTP/1.1" 200
+2026-01-12 17:40:33,299 - uvicorn.access - INFO - 127.0.0.1:11673 - "GET /tmp/b3bb3377-627a-4209-909f-697d5cb11d12/page_14.png HTTP/1.1" 200
+2026-01-12 17:40:50,259 - execution.editor_engine - WARNING - No backup found for .tmp\b3bb3377-627a-4209-909f-697d5cb11d12\page_0.png, cannot restore.
+2026-01-12 17:43:45,227 - execution.editor_engine - WARNING - No backup found for .tmp\1b86b1c6-c33a-4dcf-b31c-760fdaf684bc\page_0.png, cannot restore.
+2026-01-12 17:45:50,843 - execution.editor_engine - WARNING - No backup found for .tmp\1b86b1c6-c33a-4dcf-b31c-760fdaf684bc\page_1.png, cannot restore.

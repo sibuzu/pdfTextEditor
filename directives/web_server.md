@@ -14,34 +14,28 @@ Serve the HTML frontend and provide API endpoints to Orchestrate the PDF process
 1.  **`GET /`**: Serve `templates/index.html`.
 2.  **`POST /upload`**:
     - **Input**: `file` (UploadFile).
-    - **Action**:
-        - Save file to `.tmp/`.
-        - Call `execution/process_pdf.py` -> `convert_pdf_to_images`.
-        - Generate unique session ID.
-    - **Output**: JSON `{session_id, pages: [image_urls]}`.
+    - **Action**: Save, Convert PDF to Images, Generate Session ID.
+    - **Output**: JSON `{session_id, pages: [...]}`.
 3.  **`POST /analyze`**:
     - **Input**: `{session_id, page_index}`.
-    - **Action**:
-        - Locate image for session/page.
-        - Call `execution/ocr_engine.py` -> `analyze_image`.
+    - **Action**: OCR Analysis.
     - **Output**: JSON `{blocks: [...]}`.
-4.  **`POST /apply-edit`**:
-    - **Input**: `{session_id, page_index, bbox, text, is_italic}`.
+4.  **`POST /update-page`** (Primary Editing Endpoint):
+    - **Input**: `{session_id, page_index, edits: [EditSpec]}`.
+    - **EditSpec**: `{bbox, text, font_family, font_size, is_bold, is_italic}`.
     - **Action**:
-        - Call `execution/editor_engine.py` -> `apply_edit`.
+        - Restore original image.
+        - Iteratively Apply all `edits` (Inpaint + Render).
     - **Output**: JSON `{image_url}`.
-5.  **`POST /restore-page`**:
-    - **Input**: `{session_id, page_index}`.
-    - **Action**:
-        - Call `execution/editor_engine.py` -> `restore_page`.
-    - **Output**: JSON `{image_url}`.
-6.  **`POST /generate`**:
+5.  **`POST /generate`**:
     - **Input**: `{session_id, modifications: [...]}`.
-    - **Action**:
-        - Call `execution/generate_pdf.py` (Note: Uses the *current* state of images in .tmp/).
+    - **Action**: Generate PDF from current images in `.tmp/`.
     - **Output**: JSON `{download_url}`.
-5.  **`GET /download/{filename}`**:
-    - Serve the generated PDF.
+6.  **`GET /download/{filename}`**:
+    - Serve generated PDF.
+7.  **`POST /restore-page`** (Full Restore):
+    - **Input**: `{session_id, page_index}`.
+    - **Action**: Revert to original.
 
 ## Static Files
 - Serve `static/` directory for CSS/JS.

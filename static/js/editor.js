@@ -200,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedInput.value = mod ? mod.text : block.text;
         document.getElementById('fontFamilySelect').value = mod ? mod.font_family : 'NotoSansTC';
         document.getElementById('fontSizeInput').value = mod ? mod.font_size : '';
+        document.getElementById('textColorInput').value = mod ? mod.text_color : '#000000';
         document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : false;
         document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : false;
 
@@ -256,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const fontFamily = document.getElementById('fontFamilySelect').value;
         const fontSizeVal = document.getElementById('fontSizeInput').value;
         const fontSize = fontSizeVal ? parseInt(fontSizeVal) : null;
+        const textColor = document.getElementById('textColorInput').value;
         const isBold = document.getElementById('boldCheckbox').checked;
         const isItalic = document.getElementById('italicCheckbox').checked;
 
@@ -265,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             text: text,
             font_family: fontFamily,
             font_size: fontSize,
+            text_color: textColor,
             is_bold: isBold,
             is_italic: isItalic
         });
@@ -359,6 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     selectedInput.value = block.text;
                     document.getElementById('fontFamilySelect').value = 'NotoSansTC';
                     document.getElementById('fontSizeInput').value = '';
+                    document.getElementById('textColorInput').value = '#000000';
                     document.getElementById('boldCheckbox').checked = false;
                     document.getElementById('italicCheckbox').checked = false;
                     updateUndoButtonState(false);
@@ -390,6 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     text: mod.text,
                     font_family: mod.font_family,
                     font_size: mod.font_size,
+                    text_color: mod.text_color,
                     is_bold: mod.is_bold,
                     is_italic: mod.is_italic
                 });

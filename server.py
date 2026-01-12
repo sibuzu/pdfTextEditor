@@ -152,6 +152,7 @@ class EditSpec(BaseModel):
     is_bold: bool = False
     font_family: str = "NotoSansTC"
     font_size: Optional[int] = None
+    text_color: str = "#000000"
 
 class UpdatePageRequest(BaseModel):
     session_id: str
@@ -180,6 +181,7 @@ async def update_page(request: UpdatePageRequest):
                 edit.text, 
                 font_family=edit.font_family,
                 font_size=edit.font_size,
+                text_color=edit.text_color,
                 is_bold=edit.is_bold,
                 is_italic=edit.is_italic,
                 restore_first=False

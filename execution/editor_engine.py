@@ -21,6 +21,23 @@ FONT_MAP = {
         "regular": "NotoSansTC-Regular.ttf",
         "bold": "NotoSansTC-Bold.ttf"
     },
+    "NotoSansJP": {
+        "regular": "NotoSansJP-Regular.ttf",
+        "bold": "NotoSansJP-Bold.ttf"
+    },
+    "NotoSansSC": {
+        "regular": "NotoSansSC-Regular.ttf",
+        "bold": "NotoSansSC-Bold.ttf"
+    },
+    "NotoSerifTC": {
+        "regular": "NotoSerifTC-Regular.ttf",
+        "bold": "NotoSerifTC-Bold.ttf"
+    },
+    "NotoSerif": {
+        "regular": "NotoSerif-Regular.ttf",
+        "bold": "NotoSerif-Bold.ttf",
+        "italic": "NotoSerif-Italic.ttf"
+    },
     "Roboto": {
         "regular": "Roboto-Regular.ttf",
         "bold": "Roboto-Bold.ttf",
@@ -31,9 +48,14 @@ FONT_MAP = {
         "bold": "OpenSans-Bold.ttf",
         "italic": "OpenSans-Italic.ttf"
     },
+    "Tinos": {
+        "regular": "Tinos-Regular.ttf",
+        "bold": "Tinos-Bold.ttf",
+        "italic": "Tinos-Italic.ttf"
+    },
     "jf-openhuninn": {
         "regular": "jf-openhuninn-2.1.ttf",
-        "bold": "jf-openhuninn-2.1.ttf" # No bold variant, fallback
+        "bold": "jf-openhuninn-2.1.ttf" # No bold variant
     }
 }
 
@@ -104,6 +126,7 @@ def get_optimal_font_scale(text: str, width: int, height: int, font_path: str) -
 def apply_edit(image_path: str, bbox: list, text: str, 
                font_family: str = "NotoSansTC", 
                font_size: Optional[int] = None, 
+               text_color: str = "#000000",
                is_bold: bool = False, 
                is_italic: bool = False,
                restore_first: bool = False) -> str:
@@ -142,7 +165,7 @@ def apply_edit(image_path: str, bbox: list, text: str,
     
     # 4. Draw Text
     draw = ImageDraw.Draw(img)
-    text_color = (0, 0, 0)
+    # text_color is passed as arg
     
     font_path = get_font_path(font_family, is_bold, is_italic)
     
@@ -162,7 +185,7 @@ def apply_edit(image_path: str, bbox: list, text: str,
     text_x = x + (w - text_w) / 2
     text_y = y + (h - text_h) / 2 - text_bbox[1]
     
-    logger.info(f"Drawing: '{text}' | Fam: {font_family} | Size{final_size} | B:{is_bold} I:{is_italic}")
+    logger.info(f"Drawing: '{text}' | Fam: {font_family} | Size{final_size} | Color:{text_color} | B:{is_bold} I:{is_italic}")
     
     draw.text((text_x, text_y), text, font=font, fill=text_color)
     

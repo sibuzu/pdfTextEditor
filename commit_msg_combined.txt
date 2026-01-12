@@ -1,0 +1,18 @@
+Feat: 實作文字顏色選擇與 UI/UX 優化 (Text Color & UX Improvements)
+
+詳細變更 (Detailed Changes):
+
+1.  **新增文字顏色支援 (Text Color Support)**:
+    - **前端 (Frontend)**:
+        - `index.html`: 新增顏色選擇器 (`input type="color"`)，並將 "Size" 與 "Color" 欄位並排顯示以優化空間。所有標籤統一更新為英文。
+        - `editor.js`: 支援讀取、儲存與還原文字顏色狀態 (`text_color`)。
+    - **後端 (Backend)**:
+        - `server.py`: `EditSpec` 模型新增 `text_color` 欄位。
+        - `editor_engine.py`: 繪圖引擎 (`apply_edit`) 支援自訂文字顏色 (`fill=text_color`)。
+
+2.  **介面優化 (UI/UX Improvements)**:
+    - **側邊欄滾動 (Sidebar Scrolling)**: 修正 `style.css`，為側邊欄加入詳細滾動設定 (`max-height`, `overflow-y`)，確保在小螢幕或內容過長時仍可操作底部按鈕。
+    - **版本自動化**: 新增 `update_version.py` 腳本，用於自動更新 `index.html` 的版本號標籤。
+
+3.  **文件更新 (Documentation)**:
+    - 更新 `directives/edit_page.md` 與 `web_server.md` 以符合新的 API 規格與功能。

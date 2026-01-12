@@ -173,7 +173,8 @@ h1 a {
     gap: 1.5rem;
     position: sticky;
     top: 2rem;
-    height: fit-content;
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
 }
 
 .edit-panel {
