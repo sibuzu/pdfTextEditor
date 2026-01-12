@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 from typing import List, Dict, Any, Union
 
 # Global instance to avoid reloading model
@@ -9,93 +13,119 @@ def get_ocr_engine(lang='ch'):
         try:
             from paddleocr import PaddleOCR
             # Initialize PaddleOCR
-            # use_angle_cls=True allows detecting text at angles
-            # lang='ch' supports Chinese and English
+            # Disable angle classification to avoid potential unwarping/pre-processing shifts
             print("Initializing PaddleOCR...")
-            _ocr_engine = PaddleOCR(use_angle_cls=True, lang=lang, show_log=False)
+            # Disable advanced doc handling to ensure coordinates match the original image
+            _ocr_engine = PaddleOCR(
+                use_angle_cls=False, 
+                lang=lang, 
+                use_doc_orientation_classify=False,
+                use_doc_unwarping=False
+            )
+
         except ImportError:
             print("PaddleOCR not installed. Please run: pip install paddlepaddle paddleocr")
             raise ImportError("PaddleOCR not found")
     return _ocr_engine
 
+
 def analyze_image(image_path: str, engine='paddle') -> List[Dict[str, Any]]:
-    """
-    Analyze an image to extract text blocks using PaddleOCR.
-    
-    Args:
-        image_path: Path to the image file.
-        engine: 'paddle' (default) or 'mock'
-        
-    Returns:
-        List of dicts: {id, text, bbox, confidence}
-    """
+    # ...
     if engine == 'mock':
         return _mock_analysis(image_path)
         
     try:
         ocr = get_ocr_engine()
-        result = ocr.ocr(image_path, cls=True)
+        result = ocr.ocr(image_path)
+        logger.info(f"DEBUG: OCR Result type: {type(result)}")
+        # Log summary instead of full result to avoid huge logs
+        # logger.info(f"DEBUG: OCR Result summary: {str(result)[:500]}")
         return _parse_paddle_result(result)
     except ImportError:
-        print("Fallback to mock because PaddleOCR is missing.")
+        logger.warning("Fallback to mock because PaddleOCR is missing.")
         return _mock_analysis(image_path)
     except Exception as e:
-        print(f"Error in OCR: {e}")
+        logger.error(f"Error in OCR: {e}")
         return []
 
 def _parse_paddle_result(result) -> List[Dict[str, Any]]:
     """
     Parse PaddleOCR result into standard format.
-    Paddle Result Structure: 
-    [
-      [
-        [[x1, y1], [x2, y2], [x3, y3], [x4, y4]], # Box points
-        (text, confidence)
-      ],
-      ...
-    ]
-    Result might be a list of lists if multiple images (but we send one).
-    PaddleOCR returns [ [[box], (text, conf)], ... ] for single image path.
-    Sometimes result is None if no text found.
-    Sometimes result is [None] or similar.
     """
     blocks = []
-    if not result or result[0] is None:
+    if not result:
         return blocks
         
-    # Valid result for one image is usually result[0] if input is list, 
-    # but ocr(image_path) usually returns list of lines.
-    # Actually, paddleocr.ocr returns a list of results (one per image passed).
-    # Since we passed one image path, result[0] is the data for that image.
+    # Check for new format (List of Dicts with keys like 'rec_texts', 'dt_polys')
+    if isinstance(result, list) and len(result) > 0 and isinstance(result[0], dict):
+        data = result[0]
+        texts = data.get('rec_texts', [])
+        scores = data.get('rec_scores', [])
+        boxes = data.get('dt_polys', []) 
+        
+        for i, (text, score, box) in enumerate(zip(texts, scores, boxes)):
+            if not text or not text.strip():
+                continue
+                
+            # box is likely numpy array of shape (4, 2)
+            if hasattr(box, 'tolist'):
+                box = box.tolist()
+            
+            # Calculate bbox [x, y, w, h] from 4 points
+            xs = [p[0] for p in box]
+            ys = [p[1] for p in box]
+            x_min = min(xs)
+            y_min = min(ys)
+            w = max(xs) - x_min
+            h = max(ys) - y_min
+            
+            blocks.append({
+                "id": i,
+                "text": text,
+                "bbox": [int(x_min), int(y_min), int(w), int(h)],
+                "confidence": round(float(score), 4)
+            })
+        return blocks
     
-    data = result[0] 
-    
-    for i, line in enumerate(data):
-        # line = [box_points, (text, score)]
-        box_points = line[0] # [[x1,y1], [x2,y2], [x3,y3], [x4,y4]]
+    # Fallback/Older format handling...
+    lines = result
+    if len(result) > 0 and isinstance(result[0], list) and len(result[0]) > 0 and isinstance(result[0][0], list) and len(result[0][0]) == 4:
+         pass
+    elif len(result) > 0 and isinstance(result[0], list):
+         lines = result[0]
+
+    if not lines:
+        return blocks
+
+    for i, line in enumerate(lines):
+        if not isinstance(line, list) or len(line) < 2:
+            continue
+            
+        box_points = line[0] 
         text_info = line[1]
         text = text_info[0]
         confidence = text_info[1]
         
-        # Calculate BBox [x, y, w, h]
-        # Assuming axis aligned for simplicity, or just taking min/max
+        if not text or not text.strip():
+            continue
+
         xs = [p[0] for p in box_points]
         ys = [p[1] for p in box_points]
         x_min = min(xs)
         y_min = min(ys)
-        x_max = max(xs)
-        y_max = max(ys)
-        w = x_max - x_min
-        h = y_max - y_min
+        w = max(xs) - x_min
+        h = max(ys) - y_min
         
         blocks.append({
             "id": i,
             "text": text,
-            "bbox": [x_min, y_min, w, h],
+            "bbox": [int(x_min), int(y_min), int(w), int(h)],
             "confidence": round(confidence, 4)
         })
         
     return blocks
+
+
 
 def _mock_analysis(image_path):
     print(f"Mock analyzing: {image_path}")

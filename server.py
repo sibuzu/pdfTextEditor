@@ -11,9 +11,44 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Import execution modules
-from execution import process_pdf, ocr_engine, generate_pdf
+from execution import process_pdf, ocr_engine, generate_pdf, editor_engine
+
+import logging
+
+# ... dependencies ... 
+
+# Configure Logging
+LOG_DIR = "logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+LOG_FILE = os.path.join(LOG_DIR, "server.log")
+
+# Setup Root Logger
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler(LOG_FILE),
+        logging.StreamHandler()
+    ],
+    force=True
+)
+logger = logging.getLogger(__name__)
+
+# Configure Uvicorn Loggers to propagate to Root
+# and remove their default handlers to prevent duplication
+for log_name in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
+    log = logging.getLogger(log_name)
+    log.handlers = []
+    log.propagate = True
+
+logger.info("Server is starting up... Logging configured.")
+
+
+
+
 
 app = FastAPI(title="PDFTextEdit")
+
 
 # CORS
 app.add_middleware(
@@ -60,8 +95,9 @@ async def upload_pdf(file: UploadFile = File(...)):
             "message": "Upload successful"
         }
     except Exception as e:
-        print(f"Error in upload: {e}")
+        logger.error(f"Error in upload: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
 
 class AnalyzeRequest(BaseModel):
     session_id: str
@@ -109,6 +145,49 @@ async def generate_pdf(request: GenerateRequest):
     
     return {"download_url": f"/download/{request.session_id}/{output_path}"}
 
+class ApplyEditRequest(BaseModel):
+    session_id: str
+    page_index: int
+    bbox: List[float] # [x, y, w, h]
+    text: str # Currently unused for inpainting, but will be used for re-rendering
+
+@app.post("/apply-edit")
+async def apply_edit(request: ApplyEditRequest):
+    session_dir = os.path.join(TMP_DIR, request.session_id)
+    if not os.path.exists(session_dir):
+        raise HTTPException(status_code=404, detail="Session not found")
+        
+    image_path = os.path.join(session_dir, f"page_{request.page_index}.png")
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=404, detail="Page image not found")
+
+    try:
+        # Step 1: Inpaint (Visual Feedback)
+        editor_engine.apply_inpainting(image_path, request.bbox)
+        
+        # Step 2: Render Text (TODO)
+        
+        return {"status": "success", "image_url": f"/tmp/{request.session_id}/page_{request.page_index}.png"}
+    except Exception as e:
+        logger.error(f"Error applying edit: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+class RestoreRequest(BaseModel):
+    session_id: str
+    page_index: int
+
+@app.post("/restore-page")
+async def restore_page(request: RestoreRequest):
+    session_dir = os.path.join(TMP_DIR, request.session_id)
+    image_path = os.path.join(session_dir, f"page_{request.page_index}.png")
+    
+    try:
+        editor_engine.restore_page(image_path)
+        return {"status": "success", "image_url": f"/tmp/{request.session_id}/page_{request.page_index}.png"}
+    except Exception as e:
+        logger.error(f"Error restoring page: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/download/{session_id}/{filename}")
 async def download_file(session_id: str, filename: str):
     file_path = os.path.join(TMP_DIR, session_id, filename)
@@ -120,4 +199,5 @@ async def download_file(session_id: str, filename: str):
 app.mount("/tmp", StaticFiles(directory=TMP_DIR), name="tmp")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, log_config=None)
+

@@ -8,4 +8,5 @@ reportlab
 pypdf
 paddlepaddle
 paddleocr
-
+simple-lama-inpainting
+opencv-python

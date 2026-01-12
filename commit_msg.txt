@@ -1,0 +1,22 @@
+feat: 修正 OCR 對齊問題、新增 Inpainting 去背功能與升級 PyTorch 支援 RTX 5090
+
+詳細變更內容：
+
+1. **OCR 定位框 (Bounding Box) 對齊修正**：
+   - **前端修正 (`editor.js`)**：改用 `getBoundingClientRect` 計算渲染尺寸，並明確讀取 `offsetTop` 與 `offsetLeft`，解決因 CSS 佈局與縮放導致的座標偏移。
+   - **後端調整 (`ocr_engine.py`)**：在 PaddleOCR 初始化時禁用 `use_doc_orientation_classify` (自動轉正) 與 `use_doc_unwarping` (去扭曲)。這些功能會內部改變圖片座標，導致與原圖不符。禁用後確保了座標系統的一致性。
+   - **樣式調整 (`style.css`)**：全域加入 `box-sizing: border-box` 以統一元素尺寸計算方式。
+
+2. **新增編輯視覺回饋 (Inpainting 去背)**：
+   - **功能實作**：整合 `simple-lama-inpainting` 模型。當使用者點擊「套用修改」時，系統會自動將該區域的原始文字去除（填補背景），提供即時的視覺確認。
+   - **後端架構**：
+     - 新增 `execution/editor_engine.py`：負責載入 LaMa 模型、執行 Inpainting 以及管理圖片備份。
+     - 新增 API `/apply-edit`：接收區域座標並執行修圖。
+     - 新增 API `/restore-page`：利用備份檔還原整頁圖片。
+   - **前端互動**：
+     - 編輯器新增「全部回復 (Restore)」按鈕，允許使用者放棄修改並還原頁面。
+     - 編輯後自動刷新圖片快取 (`timestamp` bust) 以顯示最新結果。
+
+3. **環境與硬體支援 (RTX 5090)**：
+   - **PyTorch 升級**：移除舊版，安裝 PyTorch Nightly Build (cu128)，以支援 NVIDIA Blackwell 架構 (RTX 5090)。解決了 `sm_120` 架構不相容的警告並提升推論效能。
+   - **相依性更新**：更新 `requirements.txt` 加入 `simple-lama-inpainting` 與 `opencv-python`。

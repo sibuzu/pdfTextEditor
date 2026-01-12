@@ -1,6 +1,9 @@
 import fitz  # PyMuPDF
 import os
+import logging
 from typing import List
+
+logger = logging.getLogger(__name__)
 
 def convert_pdf_to_images(pdf_path: str, output_dir: str) -> List[str]:
     """
@@ -17,7 +20,7 @@ def convert_pdf_to_images(pdf_path: str, output_dir: str) -> List[str]:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
             
-        print(f"Converting PDF: {pdf_path} to images in {output_dir}")
+        logger.info(f"Converting PDF: {pdf_path} to images in {output_dir}")
         
         doc = fitz.open(pdf_path)
         image_paths = []
@@ -33,9 +36,10 @@ def convert_pdf_to_images(pdf_path: str, output_dir: str) -> List[str]:
             image_paths.append(image_filename)
             
         doc.close()
-        print(f"Generated {len(image_paths)} images.")
+        logger.info(f"Generated {len(image_paths)} images.")
         return image_paths
         
     except Exception as e:
-        print(f"Error converting PDF: {e}")
+        logger.error(f"Error converting PDF: {e}")
         raise e
+

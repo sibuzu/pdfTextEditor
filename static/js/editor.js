@@ -120,34 +120,68 @@ document.addEventListener('DOMContentLoaded', () => {
         const blocks = pageData[pageIndex].blocks;
         const img = document.getElementById(`pageImg-${pageIndex}`);
 
-        // Ensure image is loaded to get dimensions (conceptually, but absolute positioning relies on wrapper)
-        // Note: Backend returns pixels. We just overlay if image size matches.
-        // Or we might need to map scaling if CSS resizes image?
-        // For simplicity, let's assume image is displayed at natural width or we use percentages.
-        // If Backend returns pixels, and CSS scales image to 100% width, we need to map.
-        // Let's assume for prototype we rely on visual matching or 1:1.
-        // BETTER: Use percentages if possible. But Mock Engine returned Pixels. 
-        // We will assume 1:1 mapping for the Mock.
+        if (!img) return;
 
-        container.innerHTML = '';
+        function doRender() {
+            if (img.naturalWidth === 0) {
+                // If loaded but 0 width, something is wrong, or SVG?
+                return;
+            }
 
-        blocks.forEach(block => {
-            const div = document.createElement('div');
-            div.className = 'bbox';
-            div.style.left = block.bbox[0] + 'px';
-            div.style.top = block.bbox[1] + 'px';
-            div.style.width = block.bbox[2] + 'px';
-            div.style.height = block.bbox[3] + 'px';
-            div.dataset.id = block.id;
+            const rect = img.getBoundingClientRect();
+            // Use rect for rendered dimensions to account for sizing
+            const renderedWidth = img.offsetWidth;
+            const renderedHeight = img.offsetHeight;
+            const naturalWidth = img.naturalWidth;
+            const naturalHeight = img.naturalHeight;
 
-            div.addEventListener('click', (e) => {
-                e.stopPropagation();
-                selectBlock(pageIndex, block.id, div);
+            const scaleX = renderedWidth / naturalWidth;
+            const scaleY = renderedHeight / naturalHeight;
+
+            console.log(`[Page ${pageIndex}] Scaling BBoxes: Rendered ${renderedWidth}x${renderedHeight}, Natural ${naturalWidth}x${naturalHeight}, Scale ${scaleX}, ${scaleY}`);
+
+            container.innerHTML = '';
+            container.style.position = 'absolute';
+            // Explicitly align container to image position
+            container.style.top = img.offsetTop + 'px';
+            container.style.left = img.offsetLeft + 'px';
+            container.style.width = renderedWidth + 'px';
+            container.style.height = renderedHeight + 'px';
+            container.style.pointerEvents = 'none';
+
+            blocks.forEach(block => {
+                const div = document.createElement('div');
+                div.className = 'bbox';
+
+                div.style.left = (block.bbox[0] * scaleX) + 'px';
+                div.style.top = (block.bbox[1] * scaleY) + 'px';
+                div.style.width = (block.bbox[2] * scaleX) + 'px';
+                div.style.height = (block.bbox[3] * scaleY) + 'px';
+
+                div.style.pointerEvents = 'auto';
+                div.dataset.id = block.id;
+                div.title = block.text;
+
+                div.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectBlock(pageIndex, block.id, div);
+                });
+
+                container.appendChild(div);
             });
+        }
 
-            container.appendChild(div);
-        });
+        if (img.complete && img.naturalWidth > 0) {
+            doRender();
+        } else {
+            img.onload = doRender;
+        }
+
+        window.removeEventListener('resize', img._resizeHandler);
+        img._resizeHandler = doRender;
+        window.addEventListener('resize', img._resizeHandler);
     }
+
 
     function selectBlock(pageIndex, blockId, element) {
         // Deselect previous
@@ -164,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedInput.focus();
     }
 
-    applyEditBtn.addEventListener('click', () => {
+    applyEditBtn.addEventListener('click', async () => {
         if (!currentSelection) return;
 
         const { pageIndex, blockId } = currentSelection;
@@ -173,12 +207,93 @@ document.addEventListener('DOMContentLoaded', () => {
         const newText = selectedInput.value;
         block.text = newText;
 
-        alert('修改已暫存 (前端)');
-        // Visual feedback? maybe change bbox color?
+        // Visual Feedback: Call inpainting
+        applyEditBtn.textContent = 'Applying...';
+        applyEditBtn.disabled = true;
 
-        // Enable download if modifications
-        downloadBtn.disabled = false;
+        try {
+            const resp = await fetch('/apply-edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_id: currentSessionId,
+                    page_index: pageIndex,
+                    bbox: block.bbox,
+                    text: newText
+                })
+            });
+            const data = await resp.json();
+
+            if (resp.ok) {
+                // Refresh Image with timestamp to bust cache
+                const img = document.getElementById(`pageImg-${pageIndex}`);
+                img.src = `${data.image_url}?t=${new Date().getTime()}`;
+
+                window.renderRestoreBtn(pageIndex);
+
+                // Also update download button logic (still kept)
+                downloadBtn.disabled = false;
+            } else {
+                alert('Apply failed: ' + data.detail);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error applying edit');
+        } finally {
+            applyEditBtn.textContent = '套用修改';
+            applyEditBtn.disabled = false;
+        }
     });
+
+    // Function to render Restore Button
+    window.renderRestoreBtn = function (pageIndex) {
+        // Check if exists
+        if (document.getElementById(`restoreBtn-${pageIndex}`)) return;
+
+        const container = document.getElementById(`analyzeBtnContainer-${pageIndex}`);
+        // If analyze button is gone, we can put it there or alongside header?
+        // Let's put it in the page header for now
+
+        const header = document.querySelector(`#pageWrapper-${pageIndex}`).previousElementSibling;
+        // simplistic selector, relies on initEditor structure
+
+        const btn = document.createElement('button');
+        btn.id = `restoreBtn-${pageIndex}`;
+        btn.className = 'btn-secondary';
+        btn.style.marginLeft = '10px';
+        btn.style.fontSize = '0.8rem';
+        btn.style.padding = '0.2rem 0.5rem';
+        btn.textContent = "全部回復 (Restore)";
+        btn.onclick = () => restorePage(pageIndex);
+
+        header.appendChild(btn);
+    }
+
+    async function restorePage(pageIndex) {
+        if (!confirm('確定要回復此頁面嗎？所有修改將消失。')) return;
+
+        try {
+            const resp = await fetch('/restore-page', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_id: currentSessionId,
+                    page_index: pageIndex
+                })
+            });
+
+            if (resp.ok) {
+                const data = await resp.json();
+                const img = document.getElementById(`pageImg-${pageIndex}`);
+                img.src = `${data.image_url}?t=${new Date().getTime()}`;
+            } else {
+                alert('Restore failed');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error restoring page');
+        }
+    }
 
     downloadBtn.addEventListener('click', async () => {
         downloadBtn.textContent = 'Generating...';

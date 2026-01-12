@@ -1,0 +1,198 @@
+2026-01-12 11:54:33,423 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 11:54:33,457 - uvicorn.error - INFO - Started server process [52304]
+2026-01-12 11:54:33,457 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 11:54:33,458 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 11:54:33,458 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 11:56:07,949 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET / HTTP/1.1" 200
+2026-01-12 11:56:07,959 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /static/js/config.js HTTP/1.1" 304
+2026-01-12 11:56:07,961 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /static/js/i18n.js HTTP/1.1" 304
+2026-01-12 11:56:07,962 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /static/js/editor.js HTTP/1.1" 200
+2026-01-12 11:56:12,634 - execution.process_pdf - INFO - Converting PDF: .tmp\7d9f508c-2675-4d5a-8d50-79b980f2a328\input.pdf to images in .tmp\7d9f508c-2675-4d5a-8d50-79b980f2a328
+2026-01-12 11:56:16,593 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 11:56:16,594 - uvicorn.access - INFO - 127.0.0.1:10495 - "POST /upload HTTP/1.1" 200
+2026-01-12 11:56:16,600 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_0.png HTTP/1.1" 200
+2026-01-12 11:56:16,600 - uvicorn.access - INFO - 127.0.0.1:7646 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_2.png HTTP/1.1" 200
+2026-01-12 11:56:16,600 - uvicorn.access - INFO - 127.0.0.1:10243 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_1.png HTTP/1.1" 200
+2026-01-12 11:56:16,600 - uvicorn.access - INFO - 127.0.0.1:8751 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_3.png HTTP/1.1" 200
+2026-01-12 11:56:16,619 - uvicorn.access - INFO - 127.0.0.1:7646 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_4.png HTTP/1.1" 200
+2026-01-12 11:56:16,620 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_5.png HTTP/1.1" 200
+2026-01-12 11:56:16,621 - uvicorn.access - INFO - 127.0.0.1:8751 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_6.png HTTP/1.1" 200
+2026-01-12 11:56:16,622 - uvicorn.access - INFO - 127.0.0.1:10243 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_7.png HTTP/1.1" 200
+2026-01-12 11:56:16,639 - uvicorn.access - INFO - 127.0.0.1:7646 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_8.png HTTP/1.1" 200
+2026-01-12 11:56:16,641 - uvicorn.access - INFO - 127.0.0.1:8751 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_9.png HTTP/1.1" 200
+2026-01-12 11:56:16,642 - uvicorn.access - INFO - 127.0.0.1:10243 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_10.png HTTP/1.1" 200
+2026-01-12 11:56:16,643 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_11.png HTTP/1.1" 200
+2026-01-12 11:56:16,661 - uvicorn.access - INFO - 127.0.0.1:7646 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_12.png HTTP/1.1" 200
+2026-01-12 11:56:16,662 - uvicorn.access - INFO - 127.0.0.1:8751 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_13.png HTTP/1.1" 200
+2026-01-12 11:56:16,663 - uvicorn.access - INFO - 127.0.0.1:10495 - "GET /tmp/7d9f508c-2675-4d5a-8d50-79b980f2a328/page_14.png HTTP/1.1" 200
+2026-01-12 12:02:08,508 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 12:02:08,543 - uvicorn.error - INFO - Started server process [41216]
+2026-01-12 12:02:08,543 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 12:02:08,543 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 12:02:08,543 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 12:02:13,868 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET / HTTP/1.1" 200
+2026-01-12 12:02:13,880 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404
+2026-01-12 12:02:13,883 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /static/js/editor.js HTTP/1.1" 304
+2026-01-12 12:02:16,833 - execution.process_pdf - INFO - Converting PDF: .tmp\7e79c774-a716-4963-868d-63294749a1e7\input.pdf to images in .tmp\7e79c774-a716-4963-868d-63294749a1e7
+2026-01-12 12:02:20,789 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 12:02:20,790 - uvicorn.access - INFO - 127.0.0.1:9056 - "POST /upload HTTP/1.1" 200
+2026-01-12 12:02:20,796 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_0.png HTTP/1.1" 200
+2026-01-12 12:02:20,797 - uvicorn.access - INFO - 127.0.0.1:8591 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_1.png HTTP/1.1" 200
+2026-01-12 12:02:20,797 - uvicorn.access - INFO - 127.0.0.1:2126 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_2.png HTTP/1.1" 200
+2026-01-12 12:02:20,813 - uvicorn.access - INFO - 127.0.0.1:2126 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_3.png HTTP/1.1" 200
+2026-01-12 12:02:20,814 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_4.png HTTP/1.1" 200
+2026-01-12 12:02:20,826 - uvicorn.access - INFO - 127.0.0.1:8591 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_5.png HTTP/1.1" 200
+2026-01-12 12:02:20,831 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_6.png HTTP/1.1" 200
+2026-01-12 12:02:20,833 - uvicorn.access - INFO - 127.0.0.1:2126 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_7.png HTTP/1.1" 200
+2026-01-12 12:02:20,846 - uvicorn.access - INFO - 127.0.0.1:8591 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_8.png HTTP/1.1" 200
+2026-01-12 12:02:20,866 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_9.png HTTP/1.1" 200
+2026-01-12 12:02:20,867 - uvicorn.access - INFO - 127.0.0.1:2126 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_10.png HTTP/1.1" 200
+2026-01-12 12:02:20,870 - uvicorn.access - INFO - 127.0.0.1:8591 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_11.png HTTP/1.1" 200
+2026-01-12 12:02:20,884 - uvicorn.access - INFO - 127.0.0.1:9056 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_12.png HTTP/1.1" 200
+2026-01-12 12:02:20,886 - uvicorn.access - INFO - 127.0.0.1:2126 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_14.png HTTP/1.1" 200
+2026-01-12 12:02:20,886 - uvicorn.access - INFO - 127.0.0.1:8591 - "GET /tmp/7e79c774-a716-4963-868d-63294749a1e7/page_13.png HTTP/1.1" 200
+2026-01-12 12:05:40,868 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 12:05:40,903 - uvicorn.error - INFO - Started server process [21892]
+2026-01-12 12:05:40,903 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 12:05:40,904 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 12:05:40,904 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 12:05:46,423 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET / HTTP/1.1" 200
+2026-01-12 12:05:46,434 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1" 404
+2026-01-12 12:05:46,436 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /static/css/style.css?v=20260111c HTTP/1.1" 200
+2026-01-12 12:05:46,439 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /static/js/config.js HTTP/1.1" 304
+2026-01-12 12:05:46,440 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /static/js/i18n.js HTTP/1.1" 304
+2026-01-12 12:05:46,440 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /static/js/editor.js HTTP/1.1" 304
+2026-01-12 12:05:49,268 - execution.process_pdf - INFO - Converting PDF: .tmp\c177d410-ccc5-482b-9c3f-9f64d61d6972\input.pdf to images in .tmp\c177d410-ccc5-482b-9c3f-9f64d61d6972
+2026-01-12 12:05:53,209 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 12:05:53,211 - uvicorn.access - INFO - 127.0.0.1:7618 - "POST /upload HTTP/1.1" 200
+2026-01-12 12:05:53,218 - uvicorn.access - INFO - 127.0.0.1:14281 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_1.png HTTP/1.1" 200
+2026-01-12 12:05:53,218 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_0.png HTTP/1.1" 200
+2026-01-12 12:05:53,219 - uvicorn.access - INFO - 127.0.0.1:7218 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_2.png HTTP/1.1" 200
+2026-01-12 12:05:53,219 - uvicorn.access - INFO - 127.0.0.1:13659 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_3.png HTTP/1.1" 200
+2026-01-12 12:05:53,219 - uvicorn.access - INFO - 127.0.0.1:3899 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_5.png HTTP/1.1" 200
+2026-01-12 12:05:53,219 - uvicorn.access - INFO - 127.0.0.1:1562 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_4.png HTTP/1.1" 200
+2026-01-12 12:05:53,232 - uvicorn.access - INFO - 127.0.0.1:1562 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_6.png HTTP/1.1" 200
+2026-01-12 12:05:53,247 - uvicorn.access - INFO - 127.0.0.1:7218 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_9.png HTTP/1.1" 200
+2026-01-12 12:05:53,247 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_7.png HTTP/1.1" 200
+2026-01-12 12:05:53,249 - uvicorn.access - INFO - 127.0.0.1:13659 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_8.png HTTP/1.1" 200
+2026-01-12 12:05:53,252 - uvicorn.access - INFO - 127.0.0.1:3899 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_10.png HTTP/1.1" 200
+2026-01-12 12:05:53,252 - uvicorn.access - INFO - 127.0.0.1:14281 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_11.png HTTP/1.1" 200
+2026-01-12 12:05:53,257 - uvicorn.access - INFO - 127.0.0.1:1562 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_12.png HTTP/1.1" 200
+2026-01-12 12:05:53,273 - uvicorn.access - INFO - 127.0.0.1:7218 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_13.png HTTP/1.1" 200
+2026-01-12 12:05:53,275 - uvicorn.access - INFO - 127.0.0.1:7618 - "GET /tmp/c177d410-ccc5-482b-9c3f-9f64d61d6972/page_14.png HTTP/1.1" 200
+2026-01-12 12:17:48,243 - uvicorn.error - ERROR - Exception in ASGI application
+Traceback (most recent call last):
+  File "D:\git\antigravity\.venv\Lib\site-packages\uvicorn\protocols\http\h11_impl.py", line 410, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        self.scope, self.receive, self.send
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\git\antigravity\.venv\Lib\site-packages\uvicorn\middleware\proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "D:\git\antigravity\.venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 101, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "D:\git\antigravity\.venv\Lib\site-packages\fastapi\routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\git\antigravity\pdfTextEditor\server.py", line 142, in generate_pdf
+    output_path = generate_pdf.create_pdf(session_dir, request.modifications)
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'function' object has no attribute 'create_pdf'
+2026-01-12 12:51:47,263 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 12:51:47,299 - uvicorn.error - INFO - Started server process [16368]
+2026-01-12 12:51:47,299 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 12:51:47,299 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 12:51:47,300 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 12:51:59,074 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET / HTTP/1.1" 200
+2026-01-12 12:51:59,091 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /static/css/style.css?v=20260111c HTTP/1.1" 304
+2026-01-12 12:51:59,094 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /static/js/config.js HTTP/1.1" 304
+2026-01-12 12:51:59,095 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /static/js/i18n.js HTTP/1.1" 304
+2026-01-12 12:51:59,096 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /static/js/editor.js HTTP/1.1" 200
+2026-01-12 12:52:02,852 - execution.process_pdf - INFO - Converting PDF: .tmp\6ca2e381-b181-42b8-ab2f-5d290f6d0e36\input.pdf to images in .tmp\6ca2e381-b181-42b8-ab2f-5d290f6d0e36
+2026-01-12 12:52:06,850 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 12:52:06,851 - uvicorn.access - INFO - 127.0.0.1:11165 - "POST /upload HTTP/1.1" 200
+2026-01-12 12:52:06,857 - uvicorn.access - INFO - 127.0.0.1:5965 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_1.png HTTP/1.1" 200
+2026-01-12 12:52:06,857 - uvicorn.access - INFO - 127.0.0.1:13486 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_2.png HTTP/1.1" 200
+2026-01-12 12:52:06,857 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_0.png HTTP/1.1" 200
+2026-01-12 12:52:06,873 - uvicorn.access - INFO - 127.0.0.1:13486 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_3.png HTTP/1.1" 200
+2026-01-12 12:52:06,874 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_4.png HTTP/1.1" 200
+2026-01-12 12:52:06,878 - uvicorn.access - INFO - 127.0.0.1:5965 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_5.png HTTP/1.1" 200
+2026-01-12 12:52:06,889 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_6.png HTTP/1.1" 200
+2026-01-12 12:52:06,891 - uvicorn.access - INFO - 127.0.0.1:13486 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_7.png HTTP/1.1" 200
+2026-01-12 12:52:06,894 - uvicorn.access - INFO - 127.0.0.1:5965 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_8.png HTTP/1.1" 200
+2026-01-12 12:52:06,906 - uvicorn.access - INFO - 127.0.0.1:13486 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_10.png HTTP/1.1" 200
+2026-01-12 12:52:06,906 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_9.png HTTP/1.1" 200
+2026-01-12 12:52:06,915 - uvicorn.access - INFO - 127.0.0.1:5965 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_11.png HTTP/1.1" 200
+2026-01-12 12:52:06,922 - uvicorn.access - INFO - 127.0.0.1:11165 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_12.png HTTP/1.1" 200
+2026-01-12 12:52:06,924 - uvicorn.access - INFO - 127.0.0.1:13486 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_13.png HTTP/1.1" 200
+2026-01-12 12:52:06,928 - uvicorn.access - INFO - 127.0.0.1:5965 - "GET /tmp/6ca2e381-b181-42b8-ab2f-5d290f6d0e36/page_14.png HTTP/1.1" 200
+2026-01-12 12:52:23,268 - __main__ - ERROR - Error applying edit: simple-lama-inpainting not installed
+2026-01-12 13:00:58,663 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 13:00:58,702 - uvicorn.error - INFO - Started server process [50688]
+2026-01-12 13:00:58,702 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 13:00:58,702 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 13:00:58,702 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 13:01:03,389 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET / HTTP/1.1" 200
+2026-01-12 13:01:03,399 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /static/css/style.css?v=20260111c HTTP/1.1" 304
+2026-01-12 13:01:03,400 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /static/js/editor.js HTTP/1.1" 304
+2026-01-12 13:01:06,307 - execution.process_pdf - INFO - Converting PDF: .tmp\4234a6a1-f6cf-42d2-99c8-133eb524766a\input.pdf to images in .tmp\4234a6a1-f6cf-42d2-99c8-133eb524766a
+2026-01-12 13:01:10,248 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 13:01:10,249 - uvicorn.access - INFO - 127.0.0.1:12955 - "POST /upload HTTP/1.1" 200
+2026-01-12 13:01:10,255 - uvicorn.access - INFO - 127.0.0.1:8223 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_1.png HTTP/1.1" 200
+2026-01-12 13:01:10,255 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_0.png HTTP/1.1" 200
+2026-01-12 13:01:10,255 - uvicorn.access - INFO - 127.0.0.1:11378 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_2.png HTTP/1.1" 200
+2026-01-12 13:01:10,270 - uvicorn.access - INFO - 127.0.0.1:11378 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_3.png HTTP/1.1" 200
+2026-01-12 13:01:10,272 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_4.png HTTP/1.1" 200
+2026-01-12 13:01:10,272 - uvicorn.access - INFO - 127.0.0.1:8223 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_5.png HTTP/1.1" 200
+2026-01-12 13:01:10,286 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_6.png HTTP/1.1" 200
+2026-01-12 13:01:10,287 - uvicorn.access - INFO - 127.0.0.1:11378 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_7.png HTTP/1.1" 200
+2026-01-12 13:01:10,288 - uvicorn.access - INFO - 127.0.0.1:8223 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_8.png HTTP/1.1" 200
+2026-01-12 13:01:10,302 - uvicorn.access - INFO - 127.0.0.1:8223 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_9.png HTTP/1.1" 200
+2026-01-12 13:01:10,304 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_10.png HTTP/1.1" 200
+2026-01-12 13:01:10,305 - uvicorn.access - INFO - 127.0.0.1:11378 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_11.png HTTP/1.1" 200
+2026-01-12 13:01:10,320 - uvicorn.access - INFO - 127.0.0.1:8223 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_12.png HTTP/1.1" 200
+2026-01-12 13:01:10,321 - uvicorn.access - INFO - 127.0.0.1:12955 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_13.png HTTP/1.1" 200
+2026-01-12 13:01:10,322 - uvicorn.access - INFO - 127.0.0.1:11378 - "GET /tmp/4234a6a1-f6cf-42d2-99c8-133eb524766a/page_14.png HTTP/1.1" 200
+2026-01-12 13:01:28,872 - __main__ - ERROR - Error applying edit: simple-lama-inpainting not installed

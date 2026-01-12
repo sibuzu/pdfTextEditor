@@ -16,6 +16,10 @@ body {
     padding: 0;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -99,7 +103,7 @@ h1 a {
     background: var(--card-bg);
     padding: 1rem;
     border-radius: var(--radius);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     position: relative;
 }
 
@@ -139,7 +143,7 @@ h1 a {
     background: var(--card-bg);
     padding: 1.5rem;
     border-radius: var(--radius);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     height: fit-content;
     position: sticky;
     top: 2rem;
@@ -194,6 +198,11 @@ h1 a {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
