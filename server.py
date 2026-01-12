@@ -3,7 +3,7 @@ import uuid
 import shutil
 import uvicorn
 
-from typing import List, Dict, Any
+from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, UploadFile, File, HTTPException, Body
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -145,6 +145,51 @@ async def generate_pdf_endpoint(request: GenerateRequest):
     
     return {"download_url": f"/download/{request.session_id}/{output_path}"}
 
+class EditSpec(BaseModel):
+    bbox: List[float] # [x, y, w, h]
+    text: str 
+    is_italic: bool = False
+    is_bold: bool = False
+    font_family: str = "NotoSansTC"
+    font_size: Optional[int] = None
+
+class UpdatePageRequest(BaseModel):
+    session_id: str
+    page_index: int
+    edits: List[EditSpec]
+
+@app.post("/update-page")
+async def update_page(request: UpdatePageRequest):
+    try:
+        session_dir = os.path.join(TMP_DIR, request.session_id)
+        if not os.path.exists(session_dir):
+            raise HTTPException(status_code=404, detail="Session not found")
+            
+        image_path = os.path.join(session_dir, f"page_{request.page_index}.png")
+        if not os.path.exists(image_path):
+            raise HTTPException(status_code=404, detail="Page image not found")
+
+        # 1. Restore Original
+        editor_engine.restore_page(image_path)
+        
+        # 2. Apply All Edits
+        for edit in request.edits:
+            editor_engine.apply_edit(
+                image_path, 
+                edit.bbox, 
+                edit.text, 
+                font_family=edit.font_family,
+                font_size=edit.font_size,
+                is_bold=edit.is_bold,
+                is_italic=edit.is_italic,
+                restore_first=False
+            )
+        
+        return {"status": "success", "image_url": f"/tmp/{request.session_id}/page_{request.page_index}.png"}
+    except Exception as e:
+        logger.error(f"Error updating page: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 class ApplyEditRequest(BaseModel):
     session_id: str
     page_index: int
@@ -199,4 +244,3 @@ app.mount("/tmp", StaticFiles(directory=TMP_DIR), name="tmp")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000, log_config=None)
-

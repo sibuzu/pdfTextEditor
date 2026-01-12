@@ -24,7 +24,7 @@
                 <h1>
                     <a href="/" class="logo-link" title="回到首頁" data-i18n="header.title">
                         NotebookLM 簡報編輯器
-                        <span class="version-tag">Ver. 2026.01.12.1548</span>
+                        <span class="version-tag">Ver. 2026.01.12.1605</span>
                     </a>
                 </h1>
                 <p class="subtitle" data-i18n="header.subtitle">上傳 PDF → 編輯文字 → 下載結果</p>
@@ -81,7 +81,12 @@
                                 <span class="region-count" id="regionCount">0 個文字區域</span>
                                 <button class="btn-icon" id="toggleBoxesBtn" title="顯示/隱藏文字框"
                                     data-i18n="editor.showHideBoxes" data-i18n-attr="title">
-                                    顯示框
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" id="toggleIcon">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
                                 </button>
                             </div>
                         </div>
@@ -93,17 +98,41 @@
                             </div>
                             <textarea id="selectedInput" class="selected-input" rows="3"></textarea>
 
-                            <div style="margin-top: 10px; margin-bottom: 10px;">
-                                <input type="checkbox" id="italicCheckbox">
-                                <label for="italicCheckbox" style="font-size: 0.9em;">Italic (斜體)</label>
+                            <div class="edit-controls">
+                                <!-- Font Family -->
+                                <div class="control-group">
+                                    <label>字體 (Font)</label>
+                                    <select id="fontFamilySelect">
+                                        <option value="NotoSansTC">Noto Sans TC (預設)</option>
+                                        <option value="Roboto">Roboto</option>
+                                        <option value="OpenSans">Open Sans</option>
+                                        <option value="jf-openhuninn">jf-openhuninn</option>
+                                    </select>
+                                </div>
+
+                                <!-- Font Size -->
+                                <div class="control-group">
+                                    <label>大小 (Size)</label>
+                                    <input type="number" id="fontSizeInput" placeholder="Auto" min="8" max="100">
+                                </div>
+
+                                <!-- Styles -->
+                                <div class="style-toggles">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="boldCheckbox"> Bold (粗體)
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="italicCheckbox"> Italic (斜體)
+                                    </label>
+                                </div>
                             </div>
 
                             <div class="selected-actions">
-                                <button class="btn btn-small btn-secondary" id="cancelEditBtn" aria-label="取消編輯"
-                                    data-i18n="editPanel.cancelEdit"><span data-i18n="common.cancel">取消</span></button>
+                                <button class="btn btn-small btn-secondary" id="undoEditBtn" aria-label="復原"
+                                    title="還原此文字區塊為未修改狀態">Undo</button>
                                 <button class="btn btn-small btn-primary" id="applyEditBtn" aria-label="套用文字修改"
                                     data-i18n="editPanel.applyEdit"><span
-                                        data-i18n="editPanel.applyChanges">套用修改</span></button>
+                                        data-i18n="editPanel.applyChanges">Apply</span></button>
                             </div>
                         </div>
 
@@ -119,7 +148,7 @@
                         </div>
                         <div class="panel-actions">
                             <button class="btn btn-primary" id="downloadBtn" aria-label="下載編輯後的檔案"
-                                data-i18n="common.download">下載 (Download)</button>
+                                data-i18n="common.download">Download</button>
                         </div>
                     </div>
                 </div>

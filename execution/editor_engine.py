@@ -15,8 +15,52 @@ _lama_model = None
 
 # Font Config
 FONTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "fonts")
-DEFAULT_FONT = os.path.join(FONTS_DIR, "NotoSansTC-Regular.ttf")
-ITALIC_FONT = os.path.join(FONTS_DIR, "Roboto-Italic.ttf")
+
+FONT_MAP = {
+    "NotoSansTC": {
+        "regular": "NotoSansTC-Regular.ttf",
+        "bold": "NotoSansTC-Bold.ttf"
+    },
+    "Roboto": {
+        "regular": "Roboto-Regular.ttf",
+        "bold": "Roboto-Bold.ttf",
+        "italic": "Roboto-Italic.ttf"
+    },
+    "OpenSans": {
+        "regular": "OpenSans-Regular.ttf",
+        "bold": "OpenSans-Bold.ttf",
+        "italic": "OpenSans-Italic.ttf"
+    },
+    "jf-openhuninn": {
+        "regular": "jf-openhuninn-2.1.ttf",
+        "bold": "jf-openhuninn-2.1.ttf" # No bold variant, fallback
+    }
+}
+
+DEFAULT_FONT_FAMILY = "NotoSansTC"
+
+def get_font_path(family: str, is_bold: bool, is_italic: bool) -> str:
+    fam = FONT_MAP.get(family, FONT_MAP[DEFAULT_FONT_FAMILY])
+    
+    # Simple logic: If italic, prefer italic variant if exists. 
+    # If bold, prefer bold. 
+    # If both... well, we don't have BoldItalic for all, so prioritize Bold? or Italic? 
+    # Let's prioritize Italic for now as it's a specific style user asked for, 
+    # but ideally we need BoldItalic. 
+    # Given the file list, we don't have BoldItalic for most.
+    # Let's fallback: Bold takes precedence if we have to choose, or Italic?
+    # User asked for "Italic, Bold, Size, Font".
+    
+    filename = fam.get("regular")
+    if is_bold and "bold" in fam:
+        filename = fam["bold"]
+    elif is_italic and "italic" in fam:
+        filename = fam["italic"]
+        
+    # Note: This means we can't do Bold + Italic simultaneously with current fonts.
+    # That is acceptable for now.
+    
+    return os.path.join(FONTS_DIR, filename)
 
 def get_lama_model():
     global _lama_model
@@ -32,8 +76,6 @@ def get_optimal_font_scale(text: str, width: int, height: int, font_path: str) -
     size = 10  # Min size
     font = ImageFont.truetype(font_path, size)
     
-    # Binary search or iterative increment would be better, but let's try iterative for simplicity and safety
-    # Start with a guess based on height
     target_height_ratio = 0.8
     estimated_size = int(height * target_height_ratio)
     if estimated_size < size:
@@ -42,46 +84,52 @@ def get_optimal_font_scale(text: str, width: int, height: int, font_path: str) -
     try:
         font = ImageFont.truetype(font_path, estimated_size)
     except OSError:
-        # Fallback if font not found
         logger.warning(f"Font not found at {font_path}, using default.")
         font = ImageFont.load_default()
         return font, 10
 
     # Check width fit
-    bbox = font.getbbox(text) # left, top, right, bottom
+    bbox = font.getbbox(text)
     text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
     
     if text_width > width:
-        # Scale down
         scale = width / text_width
-        new_size = int(estimated_size * scale * 0.95) # 0.95 for padding
+        new_size = int(estimated_size * scale * 0.95)
         if new_size < size:
             new_size = size
         font = ImageFont.truetype(font_path, new_size)
         
     return font, font.size
 
-def apply_edit(image_path: str, bbox: list, text: str, is_italic: bool = False) -> str:
+def apply_edit(image_path: str, bbox: list, text: str, 
+               font_family: str = "NotoSansTC", 
+               font_size: Optional[int] = None, 
+               is_bold: bool = False, 
+               is_italic: bool = False,
+               restore_first: bool = False) -> str:
     """
-    1. Inpaint the region (background removal).
-    2. Draw new text.
-    Backs up the ORIGINAL image as {image_path}.original if not exists.
-    Updates the image at image_path with the edited version.
+    Applies text edit to the image.
+    If restore_first is True, it re-copies from .original backup first.
     """
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"Image not found: {image_path}")
 
-    # 1. Backup if not exists
+    # 1. Backup / Restore
     original_path = image_path + ".original"
     if not os.path.exists(original_path):
         logger.info(f"Creating backup for {image_path}")
         shutil.copy2(image_path, original_path)
     
+    if restore_first:
+        shutil.copy2(original_path, image_path)
+    
     # 2. Load Image
     img = Image.open(image_path).convert("RGB")
     
-    # 3. Create Mask & Inpaint
+    # 3. Inpaint (Background Removal)
+    # Only inpaint if we have text to write or if we explicitly want to clear the area
+    # Even if empty text, we probably want to clear the old text (inpaint).
+    
     mask = Image.new("L", img.size, 0)
     draw_mask = ImageDraw.Draw(mask)
     x, y, w, h = [int(v) for v in bbox]
@@ -90,37 +138,44 @@ def apply_edit(image_path: str, bbox: list, text: str, is_italic: bool = False) 
     
     logger.info(f"Inpainting region {bbox}...")
     model = get_lama_model()
-    img = model(img, mask) # Returns PIL Image
+    img = model(img, mask) 
     
     # 4. Draw Text
     draw = ImageDraw.Draw(img)
+    text_color = (0, 0, 0)
     
-    # Color: Default to black for now
-    text_color = (0, 0, 0) 
+    font_path = get_font_path(font_family, is_bold, is_italic)
     
-    font_path = ITALIC_FONT if is_italic else DEFAULT_FONT
-    font, font_size = get_optimal_font_scale(text, w, h, font_path)
+    if font_size and font_size > 0:
+        try:
+            font = ImageFont.truetype(font_path, font_size)
+            final_size = font_size
+        except Exception:
+            font, final_size = get_optimal_font_scale(text, w, h, font_path)
+    else:
+        font, final_size = get_optimal_font_scale(text, w, h, font_path)
     
-    # Center text vertically/horizontally
-    # getbbox returns (left, top, right, bottom) of the rendered text
     text_bbox = font.getbbox(text)
     text_w = text_bbox[2] - text_bbox[0]
     text_h = text_bbox[3] - text_bbox[1]
     
     text_x = x + (w - text_w) / 2
-    # Vertically centering is tricky with fonts, usually ascent/descent stuff. 
-    # Using simple center of bbox for now.
-    text_y = y + (h - text_h) / 2 - text_bbox[1] # -text_bbox[1] shifts it down if top is negative
+    text_y = y + (h - text_h) / 2 - text_bbox[1]
     
-    logger.info(f"Drawing text: '{text}' | Font: {font_path} | Size: {font_size} | Color: {text_color} | Box: {bbox}")
+    logger.info(f"Drawing: '{text}' | Fam: {font_family} | Size{final_size} | B:{is_bold} I:{is_italic}")
     
     draw.text((text_x, text_y), text, font=font, fill=text_color)
     
     # 5. Save
     img.save(image_path)
-    logger.info(f"Saved updated image: {image_path}")
-    
     return image_path
+
+def restore_page(image_path: str):
+    original_path = image_path + ".original"
+    if os.path.exists(original_path):
+        shutil.copy2(original_path, image_path)
+    else:
+        logger.warning(f"No backup found.")
 
 # Alias for backward compatibility if needed, using empty text means just inpaint
 def apply_inpainting(image_path: str, bbox: list) -> str:

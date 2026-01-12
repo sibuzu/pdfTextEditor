@@ -7,13 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedEdit = document.getElementById('selectedEdit');
     const selectedInput = document.getElementById('selectedInput');
     const applyEditBtn = document.getElementById('applyEditBtn');
+    const undoEditBtn = document.getElementById('undoEditBtn');
     const downloadBtn = document.getElementById('downloadBtn');
 
     let currentSessionId = null;
     let currentPages = []; // Paths to images
-    let pageData = {}; // Key: pageIndex, Value: { blocks: [], analyzed: false }
+    let pageData = {}; // Key: pageIndex, Value: { blocks: [], analyzed: false, modifications: Map }
     let currentSelection = null; // { pageIndex, blockId }
     let hasModifications = false;
+    let boxesVisible = true;
 
     // Upload Handler
     uploadZone.addEventListener('click', () => fileInput.click());
@@ -63,8 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pagesContainer.innerHTML = '';
 
         currentPages.forEach((pagePath, index) => {
-            // Check if full URL or relative
-            // pagePath from backend is just filename "page_0.png"
             const imageUrl = `/tmp/${currentSessionId}/${pagePath}`;
 
             const pageCard = document.createElement('div');
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             pagesContainer.appendChild(pageCard);
 
-            pageData[index] = { blocks: [], analyzed: false };
+            pageData[index] = { blocks: [], analyzed: false, modifications: new Map() };
         });
     }
 
@@ -104,6 +104,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 pageData[pageIndex].analyzed = true;
                 btnContainer.style.display = 'none';
                 renderBBoxes(pageIndex);
+
+                // Update Count
+                document.getElementById('regionCount').textContent = `[Page ${pageIndex + 1}] ${data.blocks.length} 個文字區域`;
             } else {
                 alert('Analysis failed');
                 btn.textContent = "重試分析";
@@ -125,13 +128,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!img) return;
 
         function doRender() {
-            if (img.naturalWidth === 0) {
-                // If loaded but 0 width, something is wrong, or SVG?
-                return;
-            }
+            if (img.naturalWidth === 0) return;
 
             const rect = img.getBoundingClientRect();
-            // Use rect for rendered dimensions to account for sizing
             const renderedWidth = img.offsetWidth;
             const renderedHeight = img.offsetHeight;
             const naturalWidth = img.naturalWidth;
@@ -140,16 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const scaleX = renderedWidth / naturalWidth;
             const scaleY = renderedHeight / naturalHeight;
 
-            console.log(`[Page ${pageIndex}] Scaling BBoxes: Rendered ${renderedWidth}x${renderedHeight}, Natural ${naturalWidth}x${naturalHeight}, Scale ${scaleX}, ${scaleY}`);
-
             container.innerHTML = '';
             container.style.position = 'absolute';
-            // Explicitly align container to image position
             container.style.top = img.offsetTop + 'px';
             container.style.left = img.offsetLeft + 'px';
             container.style.width = renderedWidth + 'px';
             container.style.height = renderedHeight + 'px';
             container.style.pointerEvents = 'none';
+            container.style.display = boxesVisible ? 'block' : 'none';
 
             blocks.forEach(block => {
                 const div = document.createElement('div');
@@ -195,9 +192,57 @@ document.addEventListener('DOMContentLoaded', () => {
 
         selectedEdit.style.display = 'block';
         document.getElementById('selectedId').textContent = `#${blockId}`;
-        document.getElementById('selectedPage').textContent = `Page ${pageIndex + 1}`;
-        selectedInput.value = block.text;
+        document.getElementById('selectedPage').style.display = 'none';
+
+        // Load State (Existing Mod or Default)
+        const mod = pageData[pageIndex].modifications.get(blockId);
+
+        selectedInput.value = mod ? mod.text : block.text;
+        document.getElementById('fontFamilySelect').value = mod ? mod.font_family : 'NotoSansTC';
+        document.getElementById('fontSizeInput').value = mod ? mod.font_size : '';
+        document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : false;
+        document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : false;
+
         selectedInput.focus();
+
+        // Update active page info
+        const count = pageData[pageIndex].blocks.length;
+        document.getElementById('regionCount').textContent = `[Page ${pageIndex + 1}] ${count} 個文字區域`;
+
+        updateUndoButtonState(!!mod);
+    }
+
+    function updateUndoButtonState(isModified) {
+        if (!undoEditBtn) return;
+        undoEditBtn.disabled = !isModified;
+        if (isModified) {
+            undoEditBtn.classList.remove('btn-secondary');
+            undoEditBtn.classList.add('btn-primary');
+        } else {
+            undoEditBtn.classList.remove('btn-primary');
+            undoEditBtn.classList.add('btn-secondary');
+        }
+    }
+
+    // Undo (Revert) Edit
+    if (undoEditBtn) {
+        undoEditBtn.addEventListener('click', async () => {
+            if (!currentSelection) return;
+            const { pageIndex, blockId } = currentSelection;
+
+            if (pageData[pageIndex].modifications.has(blockId)) {
+                // Remove Modification directly (No Confirm)
+                pageData[pageIndex].modifications.delete(blockId);
+                await callUpdatePage(pageIndex);
+
+                // Keep input values (DO NOT reset)
+                // Just update button state
+                updateUndoButtonState(false);
+                hasModifications = checkModifications();
+            } else {
+                // Not modified, do nothing
+            }
+        });
     }
 
     applyEditBtn.addEventListener('click', async () => {
@@ -206,61 +251,84 @@ document.addEventListener('DOMContentLoaded', () => {
         const { pageIndex, blockId } = currentSelection;
         const block = pageData[pageIndex].blocks.find(b => b.id === blockId);
 
-        const newText = selectedInput.value;
+        // Gather Values
+        const text = selectedInput.value;
+        const fontFamily = document.getElementById('fontFamilySelect').value;
+        const fontSizeVal = document.getElementById('fontSizeInput').value;
+        const fontSize = fontSizeVal ? parseInt(fontSizeVal) : null;
+        const isBold = document.getElementById('boldCheckbox').checked;
         const isItalic = document.getElementById('italicCheckbox').checked;
-        block.text = newText;
 
-        // Visual Feedback: Call inpainting
+        // Save State
+        pageData[pageIndex].modifications.set(blockId, {
+            bbox: block.bbox,
+            text: text,
+            font_family: fontFamily,
+            font_size: fontSize,
+            is_bold: isBold,
+            is_italic: isItalic
+        });
+
+        // Visual Feedback
+        const originalText = applyEditBtn.textContent;
         applyEditBtn.textContent = 'Applying...';
         applyEditBtn.disabled = true;
 
+        await callUpdatePage(pageIndex);
+
+        applyEditBtn.textContent = originalText;
+        applyEditBtn.disabled = false;
+        hasModifications = true;
+        updateUndoButtonState(true);
+    });
+
+    async function callUpdatePage(pageIndex) {
+        // Collect edits from Map
+        const edits = [];
+        pageData[pageIndex].modifications.forEach((mod, id) => {
+            edits.push(mod); // mod already contains bbox, text, styles
+        });
+
         try {
-            const resp = await fetch('/apply-edit', {
+            const resp = await fetch('/update-page', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     session_id: currentSessionId,
                     page_index: pageIndex,
-                    bbox: block.bbox,
-                    text: newText,
-                    is_italic: isItalic
+                    edits: edits
                 })
             });
             const data = await resp.json();
 
             if (resp.ok) {
-                // Refresh Image with timestamp to bust cache
+                // Refresh Image with timestamp
                 const img = document.getElementById(`pageImg-${pageIndex}`);
                 img.src = `${data.image_url}?t=${new Date().getTime()}`;
 
                 window.renderRestoreBtn(pageIndex);
-
-                // Update modification flag
-                hasModifications = true;
             } else {
-                alert('Apply failed: ' + data.detail);
+                alert('Update failed: ' + data.detail);
             }
         } catch (e) {
             console.error(e);
-            alert('Error applying edit');
-        } finally {
-            applyEditBtn.textContent = '套用修改';
-            applyEditBtn.disabled = false;
+            alert('Error updating page');
         }
-    });
+    }
 
-    // Function to render Restore Button
+    // Check if any modifications exist across all pages
+    function checkModifications() {
+        for (const pIdx in pageData) {
+            if (pageData[pIdx].modifications.size > 0) return true;
+        }
+        return false;
+    }
+
+    // Function to render Restore Button (Old full page restore)
     window.renderRestoreBtn = function (pageIndex) {
-        // Check if exists
         if (document.getElementById(`restoreBtn-${pageIndex}`)) return;
 
-        const container = document.getElementById(`analyzeBtnContainer-${pageIndex}`);
-        // If analyze button is gone, we can put it there or alongside header?
-        // Let's put it in the page header for now
-
         const header = document.querySelector(`#pageWrapper-${pageIndex}`).previousElementSibling;
-        // simplistic selector, relies on initEditor structure
-
         const btn = document.createElement('button');
         btn.id = `restoreBtn-${pageIndex}`;
         btn.className = 'btn-secondary';
@@ -269,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.style.padding = '0.2rem 0.5rem';
         btn.textContent = "全部回復 (Restore)";
         btn.onclick = () => restorePage(pageIndex);
-
         header.appendChild(btn);
     }
 
@@ -277,22 +344,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!confirm('確定要回復此頁面嗎？所有修改將消失。')) return;
 
         try {
-            const resp = await fetch('/restore-page', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    session_id: currentSessionId,
-                    page_index: pageIndex
-                })
-            });
+            // Also clear frontend state
+            pageData[pageIndex].modifications.clear();
+            hasModifications = checkModifications();
 
-            if (resp.ok) {
-                const data = await resp.json();
-                const img = document.getElementById(`pageImg-${pageIndex}`);
-                img.src = `${data.image_url}?t=${new Date().getTime()}`;
-            } else {
-                alert('Restore failed');
+            // Just use the new architecture: empty edits list = restore original
+            await callUpdatePage(pageIndex);
+
+            // Also reset current selection UI if it belongs to this page
+            if (currentSelection && currentSelection.pageIndex === pageIndex) {
+                const block = pageData[pageIndex].blocks.find(b => b.id === currentSelection.blockId);
+                if (block) {
+                    // Reset to original values since FULL RESTORE implies starting over
+                    selectedInput.value = block.text;
+                    document.getElementById('fontFamilySelect').value = 'NotoSansTC';
+                    document.getElementById('fontSizeInput').value = '';
+                    document.getElementById('boldCheckbox').checked = false;
+                    document.getElementById('italicCheckbox').checked = false;
+                    updateUndoButtonState(false);
+                }
             }
+
         } catch (e) {
             console.error(e);
             alert('Error restoring page');
@@ -300,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     downloadBtn.addEventListener('click', async () => {
+        hasModifications = checkModifications();
         if (!hasModifications) {
             alert('沒有任何修改，無需下載。\n(No modifications made.)');
             return;
@@ -308,16 +381,17 @@ document.addEventListener('DOMContentLoaded', () => {
         downloadBtn.textContent = 'Generating...';
         downloadBtn.disabled = true;
 
-        // Gather modifications
         const modifications = [];
         Object.keys(pageData).forEach(pIdx => {
-            pageData[pIdx].blocks.forEach(block => {
-                // In real app, we check if modified. For now send all or just assume we send everything for reconstruction.
-                // Sending everything allow regenerate PDF completely.
+            pageData[pIdx].modifications.forEach((mod, id) => {
                 modifications.push({
                     page_index: parseInt(pIdx),
-                    bbox: block.bbox,
-                    text: block.text
+                    bbox: mod.bbox,
+                    text: mod.text,
+                    font_family: mod.font_family,
+                    font_size: mod.font_size,
+                    is_bold: mod.is_bold,
+                    is_italic: mod.is_italic
                 });
             });
         });
@@ -335,15 +409,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await resp.json();
             if (resp.ok) {
                 const url = data.download_url;
-                // Trigger download
                 const a = document.createElement('a');
                 a.href = url;
                 a.download = 'edited.pdf';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
-
-                // Show success message
                 setTimeout(() => alert('下載完成 (Download Complete)'), 100);
             } else {
                 alert('Generation failed: ' + (data.detail || 'Unknown error'));
@@ -355,6 +426,22 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadBtn.textContent = '下載 (Download)';
             downloadBtn.disabled = false;
         }
+    });
+
+
+    // Toggle Box Visibility
+    document.getElementById('toggleBoxesBtn').addEventListener('click', () => {
+        boxesVisible = !boxesVisible;
+        const svg = document.querySelector('#toggleBoxesBtn svg');
+        if (boxesVisible) {
+            svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+        } else {
+            svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M1 1l22 22"></path><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>';
+        }
+        Object.keys(pageData).forEach(pIdx => {
+            const c = document.getElementById(`bboxContainer-${pIdx}`);
+            if (c) c.style.display = boxesVisible ? 'block' : 'none';
+        });
     });
 
 });
