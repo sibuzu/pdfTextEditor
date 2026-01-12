@@ -50,7 +50,7 @@
                         <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
                     <p data-i18n="upload.dropHint">點擊或拖曳檔案上傳</p>
-                    <span class="upload-hint" data-i18n="upload.supportedFormats">支援 JPG、PNG、GIF、PDF（最多 20 頁）</span>
+                    <span class="upload-hint" data-i18n="upload.supportedFormats">支援 JPG、PNG、PDF（最多 20 頁）</span>
                 </div>
             </div>
 
@@ -98,7 +98,19 @@
                             <div class="edit-controls">
                                 <!-- Font Family -->
                                 <div class="control-group">
-                                    <label>Font</label>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label>Font</label>
+                                        <div class="style-toggles" style="display: flex; gap: 1rem;">
+                                            <label class="checkbox-label"
+                                                style="font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
+                                                <input type="checkbox" id="boldCheckbox">Bold
+                                            </label>
+                                            <label class="checkbox-label"
+                                                style="font-size: 0.9rem; display: flex; align-items: center; gap: 4px;">
+                                                <input type="checkbox" id="italicCheckbox">Italic
+                                            </label>
+                                        </div>
+                                    </div>
                                     <select id="fontFamilySelect">
                                         <option value="NotoSansTC">Noto Sans TC (預設/繁中)</option>
                                         <option value="NotoSansSC">Noto Sans SC (簡中)</option>
@@ -124,16 +136,6 @@
                                             style="width: 100%; height: 38px; padding: 2px;">
                                     </div>
                                 </div>
-
-                                <!-- Styles -->
-                                <div class="style-toggles">
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" id="boldCheckbox"> Bold (粗體)
-                                    </label>
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" id="italicCheckbox"> Italic (斜體)
-                                    </label>
-                                </div>
                             </div>
 
                             <div class="selected-actions">
@@ -145,9 +147,6 @@
                             </div>
                         </div>
 
-                        <div class="edit-hint" id="editHint">
-                            <p data-i18n="editor.clickToEdit">點擊圖片上的文字框進行編輯</p>
-                        </div>
 
                     </div>
 

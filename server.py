@@ -67,26 +67,37 @@ async def read_root():
     return FileResponse("templates/index.html")
 
 @app.post("/upload")
-async def upload_pdf(file: UploadFile = File(...)):
-    if not file.filename.lower().endswith(".pdf"):
-        raise HTTPException(status_code=400, detail="Invalid file type. Only PDF is supported.")
+async def upload_file_endpoint(file: UploadFile = File(...)):
+    filename = file.filename.lower()
+    ext = os.path.splitext(filename)[1]
+    
+    if ext not in [".pdf", ".png", ".jpg", ".jpeg"]:
+        raise HTTPException(status_code=400, detail="Invalid file type. Supported: PDF, PNG, JPG.")
     
     session_id = str(uuid.uuid4())
     session_dir = os.path.join(TMP_DIR, session_id)
     os.makedirs(session_dir, exist_ok=True)
     
-    pdf_path = os.path.join(session_dir, "input.pdf")
+    input_filename = f"input{ext}"
+    input_path = os.path.join(session_dir, input_filename)
     
     try:
-        with open(pdf_path, "wb") as buffer:
+        with open(input_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
-        # Call execution.process_pdf.convert_pdf_to_images
-        images = process_pdf.convert_pdf_to_images(pdf_path, session_dir)
+        if ext == ".pdf":
+            pages = process_pdf.convert_pdf_to_images(input_path, session_dir)
+        else:
+            # Image Flow
+            # For images, we just copy 'input.ext' to 'page_0.png' (standardize on png for internal editing? or keep original?)
+            # editor_engine expects 'page_{i}.png'.
+            # process_image module handles this.
+            from execution import process_image
+            pages = process_image.process_single_image(input_path, session_dir)
         
         return {
             "session_id": session_id,
-            "pages": images,
+            "pages": pages,
             "message": "Upload successful"
         }
     except Exception as e:
@@ -133,10 +144,24 @@ async def generate_pdf_endpoint(request: GenerateRequest):
     if not os.path.exists(session_dir):
         raise HTTPException(status_code=404, detail="Session not found")
         
-    # Call execution.generate_pdf.create_pdf
-    output_path = generate_pdf.create_pdf(session_dir, request.modifications)
+    # Determine Output Format based on input existence
+    # We look for input.pdf, input.png, input.jpg, input.jpeg
     
-    # generate_pdf returns filename, logical path is in session_dir
+    input_pdf = os.path.join(session_dir, "input.pdf")
+    
+    if os.path.exists(input_pdf):
+        # Call execution.generate_pdf.create_pdf
+        output_path = generate_pdf.create_pdf(session_dir, request.modifications)
+    else:
+        # Image Mode
+        # Detect extension
+        ext = ".png" # default
+        for e in [".png", ".jpg", ".jpeg"]:
+             if os.path.exists(os.path.join(session_dir, f"input{e}")):
+                 ext = e
+                 break
+        
+        output_path = generate_pdf.create_image(session_dir, ext)
     
     return {"download_url": f"/download/{request.session_id}/{output_path}"}
 

@@ -56,3 +56,34 @@ def create_pdf(session_dir: str, modifications: list) -> str:
     
     print(f"PDF saved to {output_path}")
     return output_filename
+
+def create_image(session_dir: str, output_ext: str) -> str:
+    """
+    Export the single page image in the requested format.
+    
+    Args:
+        session_dir: Session directory.
+        output_ext: Target extension (e.g., '.jpg', '.png').
+        
+    Returns:
+        Filename of the generated image.
+    """
+    image_path = os.path.join(session_dir, "page_0.png")
+    if not os.path.exists(image_path):
+        raise FileNotFoundError("Page image not found.")
+        
+    img = Image.open(image_path)
+    
+    output_filename = f"output{output_ext}"
+    output_path = os.path.join(session_dir, output_filename)
+    
+    ext = output_ext.lower()
+    if ext in [".jpg", ".jpeg"]:
+        if img.mode != "RGB":
+            img = img.convert("RGB")
+        img.save(output_path, "JPEG", quality=95)
+    else:
+        img.save(output_path, "PNG")
+        
+    print(f"Image saved to {output_path}")
+    return output_filename
