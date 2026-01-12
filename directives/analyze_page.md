@@ -8,15 +8,19 @@ Perform OCR on a single page image to detect text blocks and their bounding boxe
 - `ocr_engine`: (Optional) Identifier for the OCR engine to use (e.g., 'mock', 'easyocr', 'ollama').
 
 ## Tools/Scripts
-- `execution/ocr_engine.py` (to be created)
-    - Function: `analyze_image(image_path, engine='mock')`
+- `execution/ocr_engine.py`
+    - Function: `analyze_image(image_path)`
+    - Engine: `PaddleOCR` (PP-OCRv5)
 
 ## Steps
 1.  **Load Image**: Open the image file.
-2.  **Preprocess**: (Optional) Apply contrast/grayscale if needed for better OCR.
-3.  **Execute OCR**:
-    - **Mock Mode**: Return dummy text blocks for testing UI.
-    - **Real Mode**: Call the OCR library/API.
+2.  **Execute OCR**:
+    - Initialize `PaddleOCR` with:
+        - `use_angle_cls=False` (Disable angle classifier to prevent unwarping shifts).
+        - `use_doc_orientation_classify=False` (Disable doc orientation).
+        - `use_doc_unwarping=False` (Crucial for coordinate alignment).
+        - `lang='ch'` (or appropriate language).
+    - Call `ocr.ocr(img_path, cls=False)`.
 4.  **Format Output**:
     - Return a list of "Regions" or "Blocks".
     - Each block must have:

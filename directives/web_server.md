@@ -25,10 +25,20 @@ Serve the HTML frontend and provide API endpoints to Orchestrate the PDF process
         - Locate image for session/page.
         - Call `execution/ocr_engine.py` -> `analyze_image`.
     - **Output**: JSON `{blocks: [...]}`.
-4.  **`POST /generate`**:
+4.  **`POST /apply-edit`**:
+    - **Input**: `{session_id, page_index, bbox, text, is_italic}`.
+    - **Action**:
+        - Call `execution/editor_engine.py` -> `apply_edit`.
+    - **Output**: JSON `{image_url}`.
+5.  **`POST /restore-page`**:
+    - **Input**: `{session_id, page_index}`.
+    - **Action**:
+        - Call `execution/editor_engine.py` -> `restore_page`.
+    - **Output**: JSON `{image_url}`.
+6.  **`POST /generate`**:
     - **Input**: `{session_id, modifications: [...]}`.
     - **Action**:
-        - Call `execution/generate_pdf.py`.
+        - Call `execution/generate_pdf.py` (Note: Uses the *current* state of images in .tmp/).
     - **Output**: JSON `{download_url}`.
 5.  **`GET /download/{filename}`**:
     - Serve the generated PDF.
