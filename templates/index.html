@@ -22,7 +22,10 @@
         <div class="container">
             <header>
                 <h1>
-                    <a href="/" class="logo-link" title="回到首頁" data-i18n="header.title">NotebookLM 簡報編輯器</a>
+                    <a href="/" class="logo-link" title="回到首頁" data-i18n="header.title">
+                        NotebookLM 簡報編輯器
+                        <span class="version-tag">Ver. 2026.01.12.1548</span>
+                    </a>
                 </h1>
                 <p class="subtitle" data-i18n="header.subtitle">上傳 PDF → 編輯文字 → 下載結果</p>
                 <p class="editor-hint" id="editorHint" style="display: none;" data-i18n="header.editorHint">
@@ -70,52 +73,54 @@
                     <div class="pages-container" id="pagesContainer"></div>
                 </div>
 
-                <div class="edit-panel">
-                    <div class="panel-header">
-                        <h3 data-i18n="editor.results">辨識結果</h3>
-                        <div class="panel-header-actions">
-                            <span class="region-count" id="regionCount">0 個文字區域</span>
-                            <button class="btn-icon" id="toggleBoxesBtn" title="顯示/隱藏文字框"
-                                data-i18n="editor.showHideBoxes" data-i18n-attr="title">
-                                顯示框
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="selected-edit" id="selectedEdit" style="display: none;">
-                        <div class="selected-edit-header">
-                            <span class="selected-id" id="selectedId">#0</span>
-                            <span class="selected-page" id="selectedPage">第 1 頁</span>
-                        </div>
-                        <textarea id="selectedInput" class="selected-input" rows="3"></textarea>
-
-                        <div style="margin-top: 10px; margin-bottom: 10px;">
-                            <input type="checkbox" id="italicCheckbox">
-                            <label for="italicCheckbox" style="font-size: 0.9em;">Italic (斜體)</label>
+                <div class="sidebar">
+                    <div class="edit-panel">
+                        <div class="panel-header">
+                            <h3 data-i18n="editor.results">辨識結果</h3>
+                            <div class="panel-header-actions">
+                                <span class="region-count" id="regionCount">0 個文字區域</span>
+                                <button class="btn-icon" id="toggleBoxesBtn" title="顯示/隱藏文字框"
+                                    data-i18n="editor.showHideBoxes" data-i18n-attr="title">
+                                    顯示框
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="selected-actions">
-                            <button class="btn btn-small btn-secondary" id="cancelEditBtn" aria-label="取消編輯"
-                                data-i18n="editPanel.cancelEdit"><span data-i18n="common.cancel">取消</span></button>
-                            <button class="btn btn-small btn-primary" id="applyEditBtn" aria-label="套用文字修改"
-                                data-i18n="editPanel.applyEdit"><span
-                                    data-i18n="editPanel.applyChanges">套用修改</span></button>
+                        <div class="selected-edit" id="selectedEdit" style="display: none;">
+                            <div class="selected-edit-header">
+                                <span class="selected-id" id="selectedId">#0</span>
+                                <span class="selected-page" id="selectedPage">第 1 頁</span>
+                            </div>
+                            <textarea id="selectedInput" class="selected-input" rows="3"></textarea>
+
+                            <div style="margin-top: 10px; margin-bottom: 10px;">
+                                <input type="checkbox" id="italicCheckbox">
+                                <label for="italicCheckbox" style="font-size: 0.9em;">Italic (斜體)</label>
+                            </div>
+
+                            <div class="selected-actions">
+                                <button class="btn btn-small btn-secondary" id="cancelEditBtn" aria-label="取消編輯"
+                                    data-i18n="editPanel.cancelEdit"><span data-i18n="common.cancel">取消</span></button>
+                                <button class="btn btn-small btn-primary" id="applyEditBtn" aria-label="套用文字修改"
+                                    data-i18n="editPanel.applyEdit"><span
+                                        data-i18n="editPanel.applyChanges">套用修改</span></button>
+                            </div>
                         </div>
+
+                        <div class="edit-hint" id="editHint">
+                            <p data-i18n="editor.clickToEdit">點擊圖片上的文字框進行編輯</p>
+                        </div>
+
                     </div>
 
-                    <div class="edit-hint" id="editHint">
-                        <p data-i18n="editor.clickToEdit">點擊圖片上的文字框進行編輯</p>
-                    </div>
-
-                </div>
-
-                <div class="edit-panel" style="margin-top: 20px;">
-                    <div class="panel-header">
-                        <h3>匯出文件</h3>
-                    </div>
-                    <div class="panel-actions">
-                        <button class="btn btn-primary" id="downloadBtn" aria-label="下載編輯後的檔案"
-                            data-i18n="common.download">下載 (Download)</button>
+                    <div class="edit-panel">
+                        <div class="panel-header">
+                            <h3>匯出文件</h3>
+                        </div>
+                        <div class="panel-actions">
+                            <button class="btn btn-primary" id="downloadBtn" aria-label="下載編輯後的檔案"
+                                data-i18n="common.download">下載 (Download)</button>
+                        </div>
                     </div>
                 </div>
             </div>

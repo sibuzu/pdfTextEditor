@@ -31,9 +31,31 @@ header {
     margin-bottom: 3rem;
 }
 
+.version-tag {
+    position: absolute;
+    bottom: -10px;
+    /* Reduced gap */
+    right: 0;
+    font-size: 0.6rem;
+    /* Slightly larger */
+    color: #94a3b8;
+    font-family: monospace;
+    font-weight: normal;
+    line-height: 1;
+}
+
+h1 {
+    display: flex;
+    justify-content: center;
+}
+
 h1 a {
     text-decoration: none;
     color: var(--text-color);
+    position: relative;
+    display: block;
+    /* changed from inline-block to allow width control if needed, but flex item behaves like block */
+    width: fit-content;
 }
 
 .subtitle {
@@ -138,15 +160,21 @@ h1 a {
     z-index: 10;
 }
 
-.edit-panel {
+.sidebar {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+}
+
+.edit-panel {
     background: var(--card-bg);
     padding: 1.5rem;
     border-radius: var(--radius);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    height: fit-content;
-    position: sticky;
-    top: 2rem;
 }
 
 .analyze-btn-container {

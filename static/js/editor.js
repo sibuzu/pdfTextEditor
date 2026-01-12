@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (resp.ok) {
                 currentSessionId = data.session_id;
                 currentPages = data.pages;
+                hasModifications = false; // Reset flag
                 initEditor();
             } else {
                 alert('Upload failed: ' + data.detail);
@@ -341,14 +342,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+
+                // Show success message
+                setTimeout(() => alert('下載完成 (Download Complete)'), 100);
             } else {
-                alert('Generation failed');
+                alert('Generation failed: ' + (data.detail || 'Unknown error'));
             }
         } catch (e) {
             console.error(e);
-            alert('Error generating PDF');
+            alert('Error generating PDF: ' + e.message);
         } finally {
-            downloadBtn.textContent = '下載';
+            downloadBtn.textContent = '下載 (Download)';
             downloadBtn.disabled = false;
         }
     });

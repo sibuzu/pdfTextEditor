@@ -364,3 +364,28 @@ Traceback (most recent call last):
     output_path = generate_pdf.create_pdf(session_dir, request.modifications)
                   ^^^^^^^^^^^^^^^^^^^^^^^
 AttributeError: 'function' object has no attribute 'create_pdf'
+2026-01-12 15:17:27,177 - __main__ - INFO - Server is starting up... Logging configured.
+2026-01-12 15:17:27,213 - uvicorn.error - INFO - Started server process [56764]
+2026-01-12 15:17:27,214 - uvicorn.error - INFO - Waiting for application startup.
+2026-01-12 15:17:27,214 - uvicorn.error - INFO - Application startup complete.
+2026-01-12 15:17:27,214 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-01-12 15:17:50,543 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET / HTTP/1.1" 200
+2026-01-12 15:17:50,564 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /static/js/editor.js HTTP/1.1" 304
+2026-01-12 15:17:53,693 - execution.process_pdf - INFO - Converting PDF: .tmp\e0543948-d3e0-4e05-9635-fc0f47e0a9c7\input.pdf to images in .tmp\e0543948-d3e0-4e05-9635-fc0f47e0a9c7
+2026-01-12 15:17:57,678 - execution.process_pdf - INFO - Generated 15 images.
+2026-01-12 15:17:57,679 - uvicorn.access - INFO - 127.0.0.1:9404 - "POST /upload HTTP/1.1" 200
+2026-01-12 15:17:57,685 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_1.png HTTP/1.1" 200
+2026-01-12 15:17:57,685 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_0.png HTTP/1.1" 200
+2026-01-12 15:17:57,709 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_6.png HTTP/1.1" 200
+2026-01-12 15:17:57,710 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_7.png HTTP/1.1" 200
+2026-01-12 15:17:57,723 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_8.png HTTP/1.1" 200
+2026-01-12 15:17:57,723 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_9.png HTTP/1.1" 200
+2026-01-12 15:17:57,737 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_2.png HTTP/1.1" 200
+2026-01-12 15:17:57,738 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_3.png HTTP/1.1" 200
+2026-01-12 15:17:57,751 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_4.png HTTP/1.1" 200
+2026-01-12 15:17:57,752 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_5.png HTTP/1.1" 200
+2026-01-12 15:17:57,764 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_10.png HTTP/1.1" 200
+2026-01-12 15:17:57,765 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_11.png HTTP/1.1" 200
+2026-01-12 15:17:57,776 - uvicorn.access - INFO - 127.0.0.1:9404 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_12.png HTTP/1.1" 200
+2026-01-12 15:17:57,776 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_13.png HTTP/1.1" 200
+2026-01-12 15:17:57,789 - uvicorn.access - INFO - 127.0.0.1:4390 - "GET /tmp/e0543948-d3e0-4e05-9635-fc0f47e0a9c7/page_14.png HTTP/1.1" 200
