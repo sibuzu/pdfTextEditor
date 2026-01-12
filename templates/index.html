@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +12,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <script>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        function gtag() { dataLayer.push(arguments); }
     </script>
 </head>
+
 <body>
     <!-- App Section (主功能區) -->
     <div class="app-section" id="app-section">
@@ -23,22 +25,26 @@
                     <a href="/" class="logo-link" title="回到首頁" data-i18n="header.title">NotebookLM 簡報編輯器</a>
                 </h1>
                 <p class="subtitle" data-i18n="header.subtitle">上傳 PDF → 編輯文字 → 下載結果</p>
-                <p class="editor-hint" id="editorHint" style="display: none;" data-i18n="header.editorHint">請點選要修改的頁面，按頁面上的「開始分析」進行文字辨識</p>
+                <p class="editor-hint" id="editorHint" style="display: none;" data-i18n="header.editorHint">
+                    請點選要修改的頁面，按頁面上的「開始分析」進行文字辨識</p>
             </header>
 
             <!-- 登入狀態區塊 (Simplified for this version) -->
             <div class="auth-container" id="authContainer">
-                 <!-- Placeholder for Auth if needed in future -->
+                <!-- Placeholder for Auth if needed in future -->
             </div>
 
             <!-- 上傳區域 -->
-            <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="點擊或拖曳檔案上傳" data-i18n="upload.dropHint" data-i18n-attr="aria-label">
-                <input type="file" id="fileInput" accept="image/*,.pdf,application/pdf" hidden aria-label="選擇檔案" data-i18n="upload.selectFile" data-i18n-attr="aria-label">
+            <div class="upload-zone" id="uploadZone" role="button" tabindex="0" aria-label="點擊或拖曳檔案上傳"
+                data-i18n="upload.dropHint" data-i18n-attr="aria-label">
+                <input type="file" id="fileInput" accept="image/*,.pdf,application/pdf" hidden aria-label="選擇檔案"
+                    data-i18n="upload.selectFile" data-i18n-attr="aria-label">
                 <div class="upload-content">
-                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="17 8 12 3 7 8"/>
-                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        aria-hidden="true">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
                     <p data-i18n="upload.dropHint">點擊或拖曳檔案上傳</p>
                     <span class="upload-hint" data-i18n="upload.supportedFormats">支援 JPG、PNG、GIF、PDF（最多 20 頁）</span>
@@ -50,7 +56,8 @@
                 <div class="spinner" aria-hidden="true"></div>
                 <p id="loadingText" data-i18n="upload.uploading">正在處理 PDF，請稍候...</p>
                 <div class="progress-container" id="progressContainer" style="display: none;">
-                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+                        aria-valuemax="100">
                         <div class="progress-fill" id="progressFill"></div>
                     </div>
                     <p class="progress-text" id="progressText">處理頁面 0/0</p>
@@ -68,7 +75,8 @@
                         <h3 data-i18n="editor.results">辨識結果</h3>
                         <div class="panel-header-actions">
                             <span class="region-count" id="regionCount">0 個文字區域</span>
-                            <button class="btn-icon" id="toggleBoxesBtn" title="顯示/隱藏文字框" data-i18n="editor.showHideBoxes" data-i18n-attr="title">
+                            <button class="btn-icon" id="toggleBoxesBtn" title="顯示/隱藏文字框"
+                                data-i18n="editor.showHideBoxes" data-i18n-attr="title">
                                 顯示框
                             </button>
                         </div>
@@ -80,10 +88,18 @@
                             <span class="selected-page" id="selectedPage">第 1 頁</span>
                         </div>
                         <textarea id="selectedInput" class="selected-input" rows="3"></textarea>
-                        
+
+                        <div style="margin-top: 10px; margin-bottom: 10px;">
+                            <input type="checkbox" id="italicCheckbox">
+                            <label for="italicCheckbox" style="font-size: 0.9em;">Italic (斜體)</label>
+                        </div>
+
                         <div class="selected-actions">
-                            <button class="btn btn-small btn-secondary" id="cancelEditBtn" aria-label="取消編輯" data-i18n="editPanel.cancelEdit"><span data-i18n="common.cancel">取消</span></button>
-                            <button class="btn btn-small btn-primary" id="applyEditBtn" aria-label="套用文字修改" data-i18n="editPanel.applyEdit"><span data-i18n="editPanel.applyChanges">套用修改</span></button>
+                            <button class="btn btn-small btn-secondary" id="cancelEditBtn" aria-label="取消編輯"
+                                data-i18n="editPanel.cancelEdit"><span data-i18n="common.cancel">取消</span></button>
+                            <button class="btn btn-small btn-primary" id="applyEditBtn" aria-label="套用文字修改"
+                                data-i18n="editPanel.applyEdit"><span
+                                    data-i18n="editPanel.applyChanges">套用修改</span></button>
                         </div>
                     </div>
 
@@ -92,11 +108,12 @@
                     </div>
 
                     <div class="panel-actions">
-                        <button class="btn btn-primary" id="downloadBtn" disabled aria-label="下載編輯後的檔案" data-i18n="common.download">下載</button>
+                        <button class="btn btn-primary" id="downloadBtn" disabled aria-label="下載編輯後的檔案"
+                            data-i18n="common.download">下載</button>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Result Container (for Download status) -->
             <div id="resultContainer" style="display:none">
                 <h3>準備下載...</h3>
@@ -110,4 +127,5 @@
     <script src="/static/js/i18n.js"></script>
     <script src="/static/js/editor.js"></script>
 </body>
+
 </html>

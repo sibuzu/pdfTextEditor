@@ -205,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const block = pageData[pageIndex].blocks.find(b => b.id === blockId);
 
         const newText = selectedInput.value;
+        const isItalic = document.getElementById('italicCheckbox').checked;
         block.text = newText;
 
         // Visual Feedback: Call inpainting
@@ -219,7 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     session_id: currentSessionId,
                     page_index: pageIndex,
                     bbox: block.bbox,
-                    text: newText
+                    text: newText,
+                    is_italic: isItalic
                 })
             });
             const data = await resp.json();

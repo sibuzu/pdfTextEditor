@@ -149,7 +149,8 @@ class ApplyEditRequest(BaseModel):
     session_id: str
     page_index: int
     bbox: List[float] # [x, y, w, h]
-    text: str # Currently unused for inpainting, but will be used for re-rendering
+    text: str 
+    is_italic: bool = False # New field
 
 @app.post("/apply-edit")
 async def apply_edit(request: ApplyEditRequest):
@@ -162,10 +163,8 @@ async def apply_edit(request: ApplyEditRequest):
         raise HTTPException(status_code=404, detail="Page image not found")
 
     try:
-        # Step 1: Inpaint (Visual Feedback)
-        editor_engine.apply_inpainting(image_path, request.bbox)
-        
-        # Step 2: Render Text (TODO)
+        # Step 1 & 2: Inpaint and Render Text
+        editor_engine.apply_edit(image_path, request.bbox, request.text, is_italic=request.is_italic)
         
         return {"status": "success", "image_url": f"/tmp/{request.session_id}/page_{request.page_index}.png"}
     except Exception as e:
