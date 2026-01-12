@@ -133,7 +133,7 @@ class GenerateRequest(BaseModel):
     modifications: List[TextModification]
 
 @app.post("/generate")
-async def generate_pdf(request: GenerateRequest):
+async def generate_pdf_endpoint(request: GenerateRequest):
     session_dir = os.path.join(TMP_DIR, request.session_id)
     if not os.path.exists(session_dir):
         raise HTTPException(status_code=404, detail="Session not found")
