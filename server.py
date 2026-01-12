@@ -1,7 +1,7 @@
 import os
 import uuid
 import shutil
-import uvicorn
+from datetime import datetime
 
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, UploadFile, File, HTTPException, Body
@@ -20,26 +20,21 @@ import logging
 # Configure Logging
 LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
-LOG_FILE = os.path.join(LOG_DIR, "server.log")
+LOG_FILE = os.path.join(LOG_DIR, f"server-{datetime.now().strftime('%Y%m%d')}.log")
 
 # Setup Root Logger
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(LOG_FILE),
+        logging.FileHandler(LOG_FILE, encoding='utf-8'),
         logging.StreamHandler()
     ],
     force=True
 )
 logger = logging.getLogger(__name__)
 
-# Configure Uvicorn Loggers to propagate to Root
-# and remove their default handlers to prevent duplication
-for log_name in ["uvicorn", "uvicorn.error", "uvicorn.access"]:
-    log = logging.getLogger(log_name)
-    log.handlers = []
-    log.propagate = True
+# Setup Root Logger
 
 logger.info("Server is starting up... Logging configured.")
 
@@ -245,4 +240,6 @@ async def download_file(session_id: str, filename: str):
 app.mount("/tmp", StaticFiles(directory=TMP_DIR), name="tmp")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_config=None)
+    print("Please run this server using an ASGI runner, e.g.:")
+    print("  fastapi run server.py")
+    # or: uvicorn server:app --host 0.0.0.0 --port 8000

@@ -7,8 +7,16 @@ Serve the HTML frontend and provide API endpoints to Orchestrate the PDF process
 - `host`: 0.0.0.0
 - `port`: 8000
 
+## Execution
+Run using an ASGI runner (e.g., `fastapi-cli` or `uvicorn` installed globally):
+```bash
+fastapi run server.py
+# OR
+uvicorn server:app --host 0.0.0.0 --port 8000
+```
+
 ## Tools/Scripts
-- `server.py` (FastAPI)
+- `server.py` (FastAPI App, no internal runner)
 
 ## Endpoints
 1.  **`GET /`**: Serve `templates/index.html`.

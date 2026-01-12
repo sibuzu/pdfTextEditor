@@ -1,0 +1,21 @@
+chore: 重構伺服器日誌架構、更新相依套件與新增說明文件 (Refactor Logging, Deps & Docs)
+
+詳細變更 (Detailed Changes):
+
+1.  **伺服器重構 (Server Refactoring)**:
+    -   **移除 Uvicorn 依賴**: 修改 `server.py`，移除 `uvicorn` 導入與 `if __main__` 啟動區塊。改為建議使用 `fastapi run` 或外部 `uvicorn` 指令啟動。
+    -   **動態日誌檔名**: `server.py` 現在會根據日期產生日誌檔 (e.g., `logs/server-20260112.log`)。
+    -   **標準化配置**: 使用標準 `logging` 模組配置，支援 UTF-8 編碼。
+
+2.  **相依套件更新 (Dependencies)**:
+    -   `requirements.txt`: 移除 `uvicorn`。
+    -   **Python 3.13 相容性**: 鎖定 `pillow>=10.4.0` 與 `numpy<2.0.0` 以解決安裝與執行錯誤。
+    -   升級 `paddleocr` 與 `paddlepaddle` 版本限制。
+
+3.  **文檔與配置 (Docs & Config)**:
+    -   **新增 README.md**: 提供完整的繁體中文安裝、執行與功能說明。
+    -   **更新 Directives**: 更新 `directives/web_server.md` 反映新的執行方式。
+    -   **.gitignore**: 新增 `logs/` 以忽略伺服器日誌檔案。
+
+4.  **清理 (Cleanup)**:
+    -   移除舊的 `commit_msg_*.txt` 檔案。
