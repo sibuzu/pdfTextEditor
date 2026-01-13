@@ -1,0 +1,10 @@
+__pycache__
+*.pyc
+*.pyo
+.venv
+.git
+.tmp
+logs
+static/fonts/*.ttf
+# We include fonts but ignore huge datasets if any
+data

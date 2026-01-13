@@ -15,6 +15,16 @@ fastapi run server.py
 uvicorn server:app --host 0.0.0.0 --port 8000
 ```
 
+### Docker Execution (Recommended)
+```bash
+# Build and Run
+docker compose -f docker/docker-compose.yml up --build
+
+# Or manually:
+docker build -f docker/Dockerfile -t pdftexteditor .
+docker run --gpus all -p 8000:8000 pdftexteditor
+```
+
 ## Tools/Scripts
 - `server.py` (FastAPI App, no internal runner)
 
