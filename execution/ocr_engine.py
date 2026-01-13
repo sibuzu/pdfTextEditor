@@ -1,3 +1,4 @@
+import threading
 import logging
 
 logger = logging.getLogger(__name__)
@@ -6,6 +7,7 @@ from typing import List, Dict, Any, Union
 
 # Global instance to avoid reloading model
 _ocr_engine = None
+_ocr_lock = threading.Lock()
 
 def get_ocr_engine(lang='ch'):
     global _ocr_engine
@@ -36,7 +38,10 @@ def analyze_image(image_path: str, engine='paddle') -> List[Dict[str, Any]]:
         
     try:
         ocr = get_ocr_engine()
-        result = ocr.ocr(image_path)
+        # Lock to ensure thread safety
+        with _ocr_lock:
+            result = ocr.ocr(image_path)
+            
         logger.info(f"DEBUG: OCR Result type: {type(result)}")
         # Log summary instead of full result to avoid huge logs
         # logger.info(f"DEBUG: OCR Result summary: {str(result)[:500]}")

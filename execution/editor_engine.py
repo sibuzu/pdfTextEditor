@@ -1,6 +1,7 @@
 import logging
 import os
 import shutil
+import threading
 from typing import Tuple, List, Optional
 from PIL import Image, ImageDraw, ImageFont
 
@@ -12,6 +13,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 _lama_model = None
+_lama_lock = threading.Lock()
 
 # Font Config
 FONTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "fonts")
@@ -161,7 +163,9 @@ def apply_edit(image_path: str, bbox: list, text: str,
     
     logger.info(f"Inpainting region {bbox}...")
     model = get_lama_model()
-    img = model(img, mask) 
+    # Lock for thread safety during inference
+    with _lama_lock:
+        img = model(img, mask) 
     
     # 4. Draw Text
     draw = ImageDraw.Draw(img)
