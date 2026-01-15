@@ -24,7 +24,7 @@ LOG_FILE = os.path.join(LOG_DIR, f"server-{datetime.now().strftime('%Y%m%d')}.lo
 
 # Setup Root Logger
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(LOG_FILE, encoding='utf-8'),

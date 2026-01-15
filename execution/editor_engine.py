@@ -161,8 +161,8 @@ def apply_edit(image_path: str, bbox: list, text: str,
     pad = 5
     draw_mask.rectangle([x - pad, y - pad, x + w + pad, y + h + pad], fill=255)
     
-    logger.info(f"Inpainting region {bbox}...")
     model = get_lama_model()
+    logger.info(f"Inpainting region {bbox}...")
     # Lock for thread safety during inference
     with _lama_lock:
         img = model(img, mask) 
