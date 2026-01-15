@@ -8,7 +8,7 @@ pypdf
 paddlepaddle>=2.6.0,<3.0.0
 paddleocr>=2.7.0,<2.8.0
 simple-lama-inpainting
-opencv-python-headless
+opencv-python
 numpy<2.0.0
 uvicorn
 pydantic
