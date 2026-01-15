@@ -16,6 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSelection = null;
     let activePageIndex = null;
 
+    // Add Listener for Remove Text Checkbox
+    const removeTextCheckbox = document.getElementById('removeTextCheckbox');
+    if (removeTextCheckbox) {
+        removeTextCheckbox.addEventListener('change', () => {
+            selectedInput.disabled = removeTextCheckbox.checked;
+            // Behavior: 
+            // 1. Disable textbox
+            // 2. Do NOT clear it (preserve value for uncheck restore)
+        });
+    }
+
     const ICONS = {
         restore: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>`,
         eye: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`,
@@ -344,6 +355,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : false;
         document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : false;
 
+        document.getElementById('removeTextCheckbox').checked = false;
+        selectedInput.disabled = false;
+        if (mod && mod.text === "") {
+            document.getElementById('removeTextCheckbox').checked = true;
+            selectedInput.disabled = true;
+
+            // If text was removed (""), we should restore the ORIGINAL text in the UI 
+            // so if user unchecks it, they see the original text, not empty string.
+            // Unless we stashed the custom text? For now, revert to block.text logic.
+            selectedInput.value = block.text;
+        }
+
         selectedInput.focus();
 
         updateUndoButtonState(!!mod);
@@ -387,7 +410,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const { pageIndex, blockId } = currentSelection;
         const block = pageData[pageIndex].blocks.find(b => b.id === blockId);
 
-        const text = selectedInput.value;
+        const isRemove = document.getElementById('removeTextCheckbox').checked;
+        const text = isRemove ? "" : selectedInput.value;
         const fontFamily = document.getElementById('fontFamilySelect').value;
         const fontSizeVal = document.getElementById('fontSizeInput').value;
         const fontSize = fontSizeVal ? parseInt(fontSizeVal) : null;

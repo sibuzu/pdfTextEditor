@@ -348,3 +348,57 @@ h3 {
     background-repeat: no-repeat;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
+
+.selected-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    white-space: nowrap;
+    /* Prevent wrapping */
+}
+
+.selected-header .selected-id {
+    margin-bottom: 0;
+}
+
+.toggle-remove-text {
+    font-size: 0.8rem;
+    font-weight: normal;
+    color: var(--text-color);
+    /* Defaults to black/dark gray */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+/* Cleanup Refactor */
+.font-control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkbox-group-label {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.control-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.control-group.flex-grow {
+    flex: 1;
+}
+
+.color-input {
+    width: 100%;
+    height: 38px;
+    padding: 2px;
+}

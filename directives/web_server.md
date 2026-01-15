@@ -41,6 +41,7 @@ docker run --gpus all -p 8000:8000 pdftexteditor
 4.  **`POST /update-page`** (Primary Editing Endpoint):
     - **Input**: `{session_id, page_index, edits: [EditSpec]}`.
     - **EditSpec**: `{bbox, text, font_family, font_size, is_bold, is_italic}`.
+        - *Note*: If `text` is an empty string `""`, the system will perform "Remove Text" (Inpainting only, no new text drawn).
     - **Action**:
         - Restore original image.
         - Iteratively Apply all `edits` (Inpaint + Render).
