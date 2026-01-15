@@ -173,6 +173,8 @@ class EditSpec(BaseModel):
     font_family: str = "NotoSansTC"
     font_size: Optional[int] = None
     text_color: str = "#000000"
+    inpaint_method: str = "lama"
+    fill_color: Optional[str] = None
 
 class UpdatePageRequest(BaseModel):
     session_id: str
@@ -204,6 +206,8 @@ async def update_page(request: UpdatePageRequest):
                 text_color=edit.text_color,
                 is_bold=edit.is_bold,
                 is_italic=edit.is_italic,
+                inpaint_method=edit.inpaint_method,
+                fill_color=edit.fill_color,
                 restore_first=False
             )
         
@@ -217,7 +221,9 @@ class ApplyEditRequest(BaseModel):
     page_index: int
     bbox: List[float] # [x, y, w, h]
     text: str 
-    is_italic: bool = False # New field
+    is_italic: bool = False 
+    inpaint_method: str = "lama"
+    fill_color: Optional[str] = None
 
 @app.post("/apply-edit")
 async def apply_edit(request: ApplyEditRequest):
@@ -231,7 +237,14 @@ async def apply_edit(request: ApplyEditRequest):
 
     try:
         # Step 1 & 2: Inpaint and Render Text
-        editor_engine.apply_edit(image_path, request.bbox, request.text, is_italic=request.is_italic)
+        editor_engine.apply_edit(
+            image_path, 
+            request.bbox, 
+            request.text, 
+            is_italic=request.is_italic,
+            inpaint_method=request.inpaint_method,
+            fill_color=request.fill_color
+        )
         
         return {"status": "success", "image_url": f"/tmp/{request.session_id}/page_{request.page_index}.png"}
     except Exception as e:

@@ -10,10 +10,72 @@ try:
 except ImportError:
     SimpleLama = None
 
+import cv2
+import numpy as np
+
 logger = logging.getLogger(__name__)
 
 _lama_model = None
 _lama_lock = threading.Lock()
+
+def apply_simple_fill(img: Image.Image, bbox: list, fill_color: Optional[str] = None) -> Image.Image:
+    """
+    Fills the bbox with a solid color.
+    If fill_color is provided (hex), use it.
+    Otherwise, calculate the average color of the 3px border surrounding the bbox.
+    """
+    x, y, w, h = [int(v) for v in bbox]
+    draw = ImageDraw.Draw(img)
+    
+    if fill_color:
+        # User specified color
+        color = fill_color
+    else:
+        # Calculate average color of the border
+        # Convert to numpy for easier calc
+        img_np = np.array(img)
+        # Handle RGB/RGBA
+        if img_np.shape[2] == 4:
+            img_np = cv2.cvtColor(img_np, cv2.COLOR_RGBA2RGB)
+            
+        H, W = img_np.shape[:2]
+        
+        # Define border region bounds (3px padding)
+        pad = 3
+        x1 = max(0, x - pad)
+        y1 = max(0, y - pad)
+        x2 = min(W, x + w + pad)
+        y2 = min(H, y + h + pad)
+        
+        # Extract the patch including border
+        patch = img_np[y1:y2, x1:x2]
+        
+        # Create a mask where border is 1, center (bbox) is 0
+        mask = np.ones(patch.shape[:2], dtype=np.uint8)
+        
+        # Relative coordinates of the bbox inside the patch
+        bx1 = x - x1
+        by1 = y - y1
+        bx2 = bx1 + w
+        by2 = by1 + h
+        
+        # Ensure relative coords are valid
+        bx1 = max(0, bx1); by1 = max(0, by1)
+        bx2 = min(patch.shape[1], bx2); by2 = min(patch.shape[0], by2)
+        
+        # Zero out the center
+        mask[by1:by2, bx1:bx2] = 0
+        
+        # Calculate mean of pixels where mask == 1
+        mean_val = cv2.mean(patch, mask=mask)
+        # mean_val is (R, G, B, 0)
+        
+        color = (int(mean_val[0]), int(mean_val[1]), int(mean_val[2]))
+        
+    logger.info(f"Simple-Filling {bbox} with color {color}")
+    draw.rectangle([x, y, x+w, y+h], fill=color)
+    
+    return img
 
 # Font Config
 FONTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static", "fonts")
@@ -131,6 +193,8 @@ def apply_edit(image_path: str, bbox: list, text: str,
                text_color: str = "#000000",
                is_bold: bool = False, 
                is_italic: bool = False,
+               inpaint_method: str = "lama",
+               fill_color: Optional[str] = None,
                restore_first: bool = False) -> str:
     """
     Applies text edit to the image.
@@ -162,11 +226,16 @@ def apply_edit(image_path: str, bbox: list, text: str,
     draw_mask.rectangle([x - pad, y - pad, x + w + pad, y + h + pad], fill=255)
     
     model = get_lama_model()
-    logger.info(f"Inpainting region {bbox}...")
-    # Lock for thread safety during inference
-    with _lama_lock:
-        img = model(img, mask) 
     
+    if inpaint_method == "simple_filled":
+        img = apply_simple_fill(img, bbox, fill_color)
+    else:
+        # Default LaMa
+        logger.info(f"Inpainting region {bbox} with LaMa...")
+        # Lock for thread safety during inference
+        with _lama_lock:
+            img = model(img, mask) 
+
     # 4. Draw Text
     draw = ImageDraw.Draw(img)
     # text_color is passed as arg

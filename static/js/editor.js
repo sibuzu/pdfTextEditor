@@ -136,13 +136,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('textColorInput').disabled = !enabled;
         document.getElementById('boldCheckbox').disabled = !enabled;
         document.getElementById('italicCheckbox').disabled = !enabled;
+        if (inpaintMethodSelect) inpaintMethodSelect.disabled = !enabled;
+        if (manualColorCheckbox) manualColorCheckbox.disabled = !enabled;
+        if (fillColorInput) fillColorInput.disabled = !enabled || !manualColorCheckbox.checked;
+
         applyEditBtn.disabled = !enabled;
-        if (undoEditBtn) undoEditBtn.disabled = !enabled; // Block level undo
+        if (undoEditBtn) undoEditBtn.disabled = !enabled;
 
         if (!enabled) {
             selectedInput.value = '';
-            // Don't clear styles, just disable? Or clearer to reset?
-            // Resetting looks cleaner.
             document.getElementById('fontSizeInput').value = '';
         }
     }
@@ -355,6 +357,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : false;
         document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : false;
 
+        // Inpaint Settings
+        const method = mod ? (mod.inpaint_method || 'lama') : globalInpaintMethod;
+        const fillColor = mod ? (mod.fill_color || '#ffffff') : globalFillColor;
+        const manualEnabled = mod ? (mod.fill_color !== null) : globalManualColorEnabled; // If mod has color, manual was on.
+
+        if (inpaintMethodSelect) {
+            inpaintMethodSelect.value = method;
+            simpleFillGroup.style.display = (method === 'simple_filled') ? 'flex' : 'none';
+        }
+
+        if (manualColorCheckbox) manualColorCheckbox.checked = manualEnabled;
+        if (fillColorInput) {
+            fillColorInput.value = fillColor;
+            fillColorInput.disabled = !manualEnabled;
+        }
+
         document.getElementById('removeTextCheckbox').checked = false;
         selectedInput.disabled = false;
         if (mod && mod.text === "") {
@@ -419,6 +437,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const isBold = document.getElementById('boldCheckbox').checked;
         const isItalic = document.getElementById('italicCheckbox').checked;
 
+        const inpaintMethod = inpaintMethodSelect ? inpaintMethodSelect.value : 'lama';
+        const isManualColor = manualColorCheckbox && manualColorCheckbox.checked;
+        const fillColor = isManualColor ? fillColorInput.value : null;
+
         pageData[pageIndex].modifications.set(blockId, {
             bbox: block.bbox,
             text: text,
@@ -426,7 +448,9 @@ document.addEventListener('DOMContentLoaded', () => {
             font_size: fontSize,
             text_color: textColor,
             is_bold: isBold,
-            is_italic: isItalic
+            is_italic: isItalic,
+            inpaint_method: inpaintMethod,
+            fill_color: fillColor
         });
 
         const originalText = applyEditBtn.textContent;
