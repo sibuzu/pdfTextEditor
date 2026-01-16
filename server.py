@@ -3,7 +3,7 @@ import uuid
 import shutil
 from datetime import datetime
 
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from fastapi import FastAPI, UploadFile, File, HTTPException, Body
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -171,7 +171,7 @@ class EditSpec(BaseModel):
     is_italic: bool = False
     is_bold: bool = False
     font_family: str = "NotoSansTC"
-    font_size: Optional[int] = None
+    font_size: Optional[Union[str, float, int]] = "100%"
     text_color: str = "#000000"
     inpaint_method: str = "lama"
     fill_color: Optional[str] = None

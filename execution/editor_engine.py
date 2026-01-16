@@ -242,14 +242,37 @@ def apply_edit(image_path: str, bbox: list, text: str,
     
     font_path = get_font_path(font_family, is_bold, is_italic)
     
-    if font_size and font_size > 0:
+    # Calculate Font Scale Factor
+    # Base scale is 1.1 (to make text slightly larger by default), multiplied by User Factor
+    base_factor = 1.1
+    user_factor = 1.0
+    
+    if font_size is not None:
         try:
-            font = ImageFont.truetype(font_path, font_size)
-            final_size = font_size
-        except Exception:
-            font, final_size = get_optimal_font_scale(text, w, h, font_path)
-    else:
-        font, final_size = get_optimal_font_scale(text, w, h, font_path)
+            if isinstance(font_size, str) and font_size.strip().endswith("%"):
+                user_factor = float(font_size.strip().rstrip("%")) / 100.0
+            elif isinstance(font_size, (int, float)):
+                 # User rule: number interpreted as % (e.g. 100 -> 1.0)
+                user_factor = float(font_size) / 100.0
+            
+            # Sanity check
+            if user_factor <= 0:
+                user_factor = 1.0
+        except ValueError:
+            user_factor = 1.0
+            logger.warning(f"Invalid font_size format: {font_size}, defaulting to 100%")
+
+    final_scale_factor = base_factor * user_factor
+
+    # Calculate Scaled Diagram Dimensions (for font fitting only)
+    # The physical area we draw into (for centering) is still (x, y, w, h)
+    # But we tell the font optimizer we have (w * scale, h * scale) space.
+    
+    scaled_w = int(w * final_scale_factor)
+    scaled_h = int(h * final_scale_factor)
+    
+    # Use the optimized font scale logic with SCALED dimensions
+    font, final_size = get_optimal_font_scale(text, scaled_w, scaled_h, font_path)
     
     text_bbox = font.getbbox(text)
     text_w = text_bbox[2] - text_bbox[0]
