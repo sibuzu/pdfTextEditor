@@ -195,6 +195,8 @@ def apply_edit(image_path: str, bbox: list, text: str,
                is_italic: bool = False,
                inpaint_method: str = "lama",
                fill_color: Optional[str] = None,
+               offset_x: int = 0,
+               offset_y: int = 0,
                restore_first: bool = False) -> str:
     """
     Applies text edit to the image.
@@ -278,8 +280,8 @@ def apply_edit(image_path: str, bbox: list, text: str,
     text_w = text_bbox[2] - text_bbox[0]
     text_h = text_bbox[3] - text_bbox[1]
     
-    text_x = x + (w - text_w) / 2
-    text_y = y + (h - text_h) / 2 - text_bbox[1]
+    text_x = x + (w - text_w) / 2 + offset_x
+    text_y = y + (h - text_h) / 2 - text_bbox[1] + offset_y
     
     logger.info(f"Drawing: '{text}' | Fam: {font_family} | Size{final_size} | Color:{text_color} | B:{is_bold} I:{is_italic}")
     

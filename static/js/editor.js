@@ -16,6 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSelection = null;
     let activePageIndex = null;
 
+    // Last used styles (Global Defaults)
+    let lastFontFamily = 'NotoSansTC';
+    let lastFontSize = '100%';
+    let lastTextColor = '#000000';
+    let lastIsBold = false;
+    let lastIsItalic = false;
+
     // Add Listener for Remove Text Checkbox
     const removeTextCheckbox = document.getElementById('removeTextCheckbox');
     if (removeTextCheckbox) {
@@ -133,6 +140,8 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedInput.disabled = !enabled;
         document.getElementById('fontFamilySelect').disabled = !enabled;
         document.getElementById('fontSizeInput').disabled = !enabled;
+        document.getElementById('offsetXInput').disabled = !enabled;
+        document.getElementById('offsetYInput').disabled = !enabled;
         document.getElementById('textColorInput').disabled = !enabled;
         document.getElementById('boldCheckbox').disabled = !enabled;
         document.getElementById('italicCheckbox').disabled = !enabled;
@@ -146,6 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!enabled) {
             selectedInput.value = '';
             document.getElementById('fontSizeInput').value = '';
+            document.getElementById('offsetXInput').value = '0';
+            document.getElementById('offsetYInput').value = '0';
         }
     }
 
@@ -350,40 +361,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const mod = pageData[pageIndex].modifications.get(blockId);
 
-        selectedInput.value = mod ? mod.text : block.text;
-        document.getElementById('fontFamilySelect').value = mod ? mod.font_family : 'NotoSansTC';
-        document.getElementById('fontSizeInput').value = mod ? mod.font_size : '100%';
-        document.getElementById('textColorInput').value = mod ? mod.text_color : '#000000';
-        document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : false;
-        document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : false;
+        // Check explicit flag first, fallback to empty text check for legacy
+        const isRemoved = mod ? (mod.is_removed === true || (mod.is_removed === undefined && mod.text === "")) : false;
 
-        // Inpaint Settings
-        const method = mod ? (mod.inpaint_method || 'lama') : globalInpaintMethod;
-        const fillColor = mod ? (mod.fill_color || '#ffffff') : globalFillColor;
-        const manualEnabled = mod ? (mod.fill_color !== null) : globalManualColorEnabled; // If mod has color, manual was on.
+        document.getElementById('removeTextCheckbox').checked = isRemoved;
+        selectedInput.disabled = isRemoved;
 
-        if (inpaintMethodSelect) {
-            inpaintMethodSelect.value = method;
-            simpleFillGroup.style.display = (method === 'simple_filled') ? 'flex' : 'none';
-        }
-
-        if (manualColorCheckbox) manualColorCheckbox.checked = manualEnabled;
-        if (fillColorInput) {
-            fillColorInput.value = fillColor;
-            fillColorInput.disabled = !manualEnabled;
-        }
-
-        document.getElementById('removeTextCheckbox').checked = false;
-        selectedInput.disabled = false;
-        if (mod && mod.text === "") {
-            document.getElementById('removeTextCheckbox').checked = true;
-            selectedInput.disabled = true;
-
-            // If text was removed (""), we should restore the ORIGINAL text in the UI 
-            // so if user unchecks it, they see the original text, not empty string.
-            // Unless we stashed the custom text? For now, revert to block.text logic.
+        if (isRemoved) {
+            // If text is removed, show ORIGINAL text so user sees what is being removed/hidden
             selectedInput.value = block.text;
+        } else {
+            // Otherwise show the actual text (edited or original)
+            selectedInput.value = mod ? mod.text : block.text;
         }
+
+        document.getElementById('fontFamilySelect').value = mod ? mod.font_family : lastFontFamily;
+        document.getElementById('fontSizeInput').value = mod ? mod.font_size : '100%';
+        document.getElementById('offsetXInput').value = mod ? (mod.offset_x || 0) : 0;
+        document.getElementById('offsetYInput').value = mod ? (mod.offset_y || 0) : 0;
+        document.getElementById('textColorInput').value = mod ? mod.text_color : lastTextColor;
+        document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : lastIsBold;
+        document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : lastIsItalic;
 
         selectedInput.focus();
 
@@ -434,10 +432,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let fontSizeVal = document.getElementById('fontSizeInput').value.trim();
         if (!fontSizeVal) fontSizeVal = "100%";
         if (/^\d+$/.test(fontSizeVal)) fontSizeVal += "%"; // Auto append % if number
+        if (/^\d+$/.test(fontSizeVal)) fontSizeVal += "%"; // Auto append % if number
         const fontSize = fontSizeVal;
+        const offsetX = parseInt(document.getElementById('offsetXInput').value) || 0;
+        const offsetY = parseInt(document.getElementById('offsetYInput').value) || 0;
         const textColor = document.getElementById('textColorInput').value;
         const isBold = document.getElementById('boldCheckbox').checked;
         const isItalic = document.getElementById('italicCheckbox').checked;
+
+        // Update Global Last Used Styles
+        lastFontFamily = fontFamily;
+        // lastFontSize = fontSize; // Do not remember font size
+        lastTextColor = textColor;
+        lastIsBold = isBold;
+        lastIsItalic = isItalic;
 
         const inpaintMethod = inpaintMethodSelect ? inpaintMethodSelect.value : 'lama';
         const isManualColor = manualColorCheckbox && manualColorCheckbox.checked;
@@ -451,9 +459,13 @@ document.addEventListener('DOMContentLoaded', () => {
             text_color: textColor,
             is_bold: isBold,
             is_italic: isItalic,
+            offset_x: offsetX,
+            offset_y: offsetY,
             inpaint_method: inpaintMethod,
-            fill_color: fillColor
+            fill_color: fillColor,
+            is_removed: isRemove
         });
+
 
         const originalText = applyEditBtn.textContent;
         applyEditBtn.textContent = 'Applying...';

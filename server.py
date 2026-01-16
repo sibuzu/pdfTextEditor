@@ -175,6 +175,8 @@ class EditSpec(BaseModel):
     text_color: str = "#000000"
     inpaint_method: str = "lama"
     fill_color: Optional[str] = None
+    offset_x: int = 0
+    offset_y: int = 0
 
 class UpdatePageRequest(BaseModel):
     session_id: str
@@ -208,6 +210,8 @@ async def update_page(request: UpdatePageRequest):
                 is_italic=edit.is_italic,
                 inpaint_method=edit.inpaint_method,
                 fill_color=edit.fill_color,
+                offset_x=edit.offset_x,
+                offset_y=edit.offset_y,
                 restore_first=False
             )
         
