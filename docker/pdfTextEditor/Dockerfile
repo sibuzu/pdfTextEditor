@@ -36,8 +36,8 @@ RUN pip3 install --no-cache-dir --break-system-packages "paddlepaddle>=2.6.0" "p
 
 # Preload Models (PaddleOCR & LaMa)
 # Copy script specifically to cache this layer
-COPY docker/pdfTextEditor/preload_models.py .
-RUN python3 preload_models.py && rm preload_models.py
+# COPY docker/pdfTextEditor/preload_models.py .
+# RUN export CUDA_VISIBLE_DEVICES="" && python3 preload_models.py && rm preload_models.py
 
 # Copy application code
 COPY . .

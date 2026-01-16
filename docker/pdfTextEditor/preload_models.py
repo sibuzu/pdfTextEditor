@@ -22,8 +22,9 @@ try:
     print("Downloading LaMa model...")
     from simple_lama_inpainting import SimpleLama
     # Trigger download
-    lama = SimpleLama()
-    print("LaMa loaded.")
+    # lama = SimpleLama()
+    # print("LaMa loaded.")
+    pass
 except ImportError:
     print("SimpleLama not installed.")
 except Exception as e:

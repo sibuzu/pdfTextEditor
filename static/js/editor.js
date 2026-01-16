@@ -52,6 +52,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     fileInput.addEventListener('change', (e) => handleUpload(e.target.files[0]));
 
+    // Warn before leaving page if session is active
+    window.addEventListener('beforeunload', (e) => {
+        if (currentSessionId) {
+            e.preventDefault();
+            e.returnValue = ''; // Standard for prompting
+            return '';
+        }
+    });
+
+    // New Slider Button Logic
+    const newSliderBtn = document.getElementById('newSliderBtn');
+    if (newSliderBtn) {
+        newSliderBtn.addEventListener('click', () => {
+            if (confirm('確定要離開編輯嗎？\n\n離開後所有未下載的修改將會遺失。\n請先匯出已編輯好的投影片。')) {
+                currentSessionId = null; // Prevent beforeunload warning
+                window.location.reload();
+            }
+        });
+    }
+
     async function handleUpload(file) {
         if (!file) return;
         uploadZone.style.display = 'none';
