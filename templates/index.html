@@ -103,7 +103,7 @@
 
                             <div class="edit-controls">
                                 <!-- Font Family -->
-                                <div class="control-group">
+                                <div class="control-group no-margin-bottom">
                                     <div class="font-control-header">
                                         <label>Font</label>
                                         <select id="fontFamilySelect">
@@ -125,35 +125,33 @@
                                         <label class="checkbox-group-label">
                                             <input type="checkbox" id="italicCheckbox">Italic
                                         </label>
-                                        <input type="color" id="textColorInput" value="#000000" class="color-input"
-                                            style="flex: 1; width: auto;">
+                                        <input type="color" id="textColorInput" value="#000000" class="color-input">
                                     </div>
                                 </div>
 
                                 <!-- Size & Color Row -->
                                 <div class="control-row">
-                                    <div class="control-group flex-grow"
-                                        style="flex-direction: row; align-items: center;">
+                                    <div class="control-group flex-grow size-row">
                                         <label>Size</label>
-                                        <input type="text" id="fontSizeInput" placeholder="100%">
+                                        <input type="text" id="fontSizeInput" placeholder="100%"
+                                            class="font-size-input">
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Inpaint Settings -->
-                            <div class="control-row" style="margin-bottom: 10px; gap: 8px; align-items: center;">
+                            <div class="control-row inpaint-settings">
                                 <div class="control-group flex-grow">
-                                    <label style="font-size: 0.8rem; color: #666; margin-bottom: 4px;">Inpaint
+                                    <label class="label-small-gray">Inpaint
                                         Method</label>
-                                    <select id="inpaintMethodSelect" style="width: 100%;">
+                                    <select id="inpaintMethodSelect" class="full-width-select">
                                         <option value="lama">LaMa (Smart)</option>
                                         <option value="simple_filled">Simple Fill (Solid)</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="control-row" id="simpleFillGroup"
-                                style="display: none; margin-bottom: 10px; align-items: center; justify-content: space-between;">
-                                <label class="checkbox-label" style="font-size: 0.8em;">
+                            <div class="control-row simple-fill" id="simpleFillGroup" style="display: none;">
+                                <label class="checkbox-label label-small">
                                     <input type="checkbox" id="manualColorCheckbox"> Manual Color
                                 </label>
                                 <input type="color" id="fillColorInput" value="#ffffff" disabled title="Fill Color">

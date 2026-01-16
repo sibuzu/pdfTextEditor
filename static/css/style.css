@@ -242,6 +242,10 @@ h3 {
     margin: 0.2rem 0 0 0;
 }
 
+.style-toggles .color-input {
+    margin-left: auto;
+}
+
 .page-header {
     display: flex;
     align-items: center;
@@ -398,7 +402,55 @@ h3 {
 }
 
 .color-input {
-    width: 100%;
+    width: 38px;
     height: 38px;
     padding: 2px;
+}
+
+/* Refactored Utility Classes (Added) */
+.control-group.no-margin-bottom {
+    margin-bottom: 0;
+}
+
+.input-auto-width {
+    flex: 1;
+    width: auto;
+}
+
+.control-group.size-row {
+    margin-top: 5px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.font-size-input {
+    width: 65%;
+    text-align: center;
+}
+
+.control-row.inpaint-settings {
+    margin-bottom: 10px;
+    gap: 8px;
+    align-items: center;
+}
+
+.label-small-gray {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.full-width-select {
+    width: 100%;
+}
+
+.control-row.simple-fill {
+    margin-bottom: 10px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.label-small {
+    font-size: 0.8em;
 }
