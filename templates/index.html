@@ -101,6 +101,50 @@
                             </div>
                             <textarea id="selectedInput" class="selected-input" rows="3"></textarea>
 
+                            <div class="edit-controls">
+                                <!-- Font Family -->
+                                <div class="control-group">
+                                    <div class="font-control-header">
+                                        <label>Font</label>
+                                        <select id="fontFamilySelect">
+                                            <option value="NotoSansTC">Noto Sans TC (繁中)</option>
+                                            <option value="NotoSansSC">Noto Sans SC (簡中)</option>
+                                            <option value="NotoSansJP">Noto Sans JP (日文)</option>
+                                            <option value="NotoSerifTC">Noto Serif TC (繁中)</option>
+                                            <option value="NotoSerif">Noto Serif (英文)</option>
+                                            <option value="Roboto">Roboto (英文)</option>
+                                            <option value="OpenSans">Open Sans (英文)</option>
+                                            <option value="Tinos">Tinos (英文)</option>
+                                            <option value="jf-openhuninn">jf-openhuninn (粉圓體)</option>
+                                        </select>
+                                    </div>
+                                    <div class="style-toggles">
+                                        <label class="checkbox-group-label">
+                                            <input type="checkbox" id="boldCheckbox">Bold
+                                        </label>
+                                        <label class="checkbox-group-label">
+                                            <input type="checkbox" id="italicCheckbox">Italic
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Size & Color Row -->
+                                <div class="control-row">
+                                    <div class="control-group flex-grow"
+                                        style="flex-direction: row; align-items: center;">
+                                        <label>Size</label>
+                                        <input type="number" id="fontSizeInput" placeholder="Auto" min="8" max="100"
+                                            style="flex: 1; width: auto;">
+                                    </div>
+                                    <div class="control-group flex-grow"
+                                        style="flex-direction: row; align-items: center;">
+                                        <label>Color</label>
+                                        <input type="color" id="textColorInput" value="#000000" class="color-input"
+                                            style="flex: 1; width: auto;">
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Inpaint Settings -->
                             <div class="control-row" style="margin-bottom: 10px; gap: 8px; align-items: center;">
                                 <div class="control-group flex-grow">
@@ -120,46 +164,6 @@
                                 <input type="color" id="fillColorInput" value="#ffffff" disabled title="Fill Color">
                             </div>
 
-                            <div class="edit-controls">
-                                <!-- Font Family -->
-                                <div class="control-group">
-                                    <div class="font-control-header">
-                                        <label>Font</label>
-                                        <div class="style-toggles">
-                                            <label class="checkbox-group-label">
-                                                <input type="checkbox" id="boldCheckbox">Bold
-                                            </label>
-                                            <label class="checkbox-group-label">
-                                                <input type="checkbox" id="italicCheckbox">Italic
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <select id="fontFamilySelect">
-                                        <option value="NotoSansTC">Noto Sans TC (預設/繁中)</option>
-                                        <option value="NotoSansSC">Noto Sans SC (簡中)</option>
-                                        <option value="NotoSansJP">Noto Sans JP (日文)</option>
-                                        <option value="NotoSerifTC">Noto Serif TC (宋體/繁中)</option>
-                                        <option value="NotoSerif">Noto Serif (英文)</option>
-                                        <option value="Roboto">Roboto (英文)</option>
-                                        <option value="OpenSans">Open Sans (英文)</option>
-                                        <option value="Tinos">Tinos (Serif style)</option>
-                                        <option value="jf-openhuninn">jf-openhuninn (粉圓體)</option>
-                                    </select>
-                                </div>
-
-                                <!-- Size & Color Row -->
-                                <div class="control-row">
-                                    <div class="control-group flex-grow">
-                                        <label>Size</label>
-                                        <input type="number" id="fontSizeInput" placeholder="Auto" min="8" max="100">
-                                    </div>
-                                    <div class="control-group flex-grow">
-                                        <label>Color</label>
-                                        <input type="color" id="textColorInput" value="#000000" class="color-input">
-                                    </div>
-                                </div>
-                            </div>
-
                             <div class="selected-actions">
                                 <button class="btn btn-small btn-secondary" id="undoEditBtn" aria-label="復原"
                                     title="還原此文字區塊為未修改狀態">Undo</button>
@@ -167,6 +171,7 @@
                                     data-i18n="editPanel.applyEdit"><span
                                         data-i18n="editPanel.applyChanges">Apply</span></button>
                             </div>
+
                         </div>
 
 
