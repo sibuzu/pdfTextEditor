@@ -1,14 +1,14 @@
 services:
   pdf-editor:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: ../..
+      dockerfile: docker/pdfTextEditor/Dockerfile
     container_name: pdf-text-editor
     ports:
       - "8000:8000"
     volumes:
-      - ../logs:/app/logs
-      - ../.tmp:/app/.tmp
+      - ../../logs:/app/logs
+      - ../../.tmp:/app/.tmp
     deploy:
       resources:
         reservations:
