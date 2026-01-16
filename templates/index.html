@@ -146,22 +146,32 @@
                             </div>
 
                             <!-- Inpaint Settings -->
-                            <div class="control-row inpaint-settings">
-                                <div class="control-group flex-grow">
-                                    <label class="label-small-gray">Inpaint
-                                        Method</label>
+                            <div class="control-row inpaint-settings" style="align-items: flex-end;">
+                                <div class="control-group" style="flex-grow: 1; margin-right: 8px;">
+                                    <label class="label-small-gray">Inpaint Method</label>
                                     <select id="inpaintMethodSelect" class="full-width-select">
                                         <option value="lama">LaMa (Smart)</option>
                                         <option value="simple_filled">Simple Fill (Solid)</option>
                                     </select>
                                 </div>
+                                <div class="control-group">
+                                    <label class="label-small-gray" style="visibility: hidden;">Color</label>
+                                    <div style="display: flex; gap: 4px;">
+                                        <input type="color" id="fillColorInput" value="#ffffff" class="color-input"
+                                            title="Fill Color">
+                                        <button id="autoColorBtn" class="color-input"
+                                            style="padding: 0; display: flex; align-items: center; justify-content: center; background: #eee; border: 1px solid #ccc; cursor: pointer;"
+                                            title="Auto Detect Background Color">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                                                viewBox="0 -960 960 960" width="24px" fill="#1f1f1f">
+                                                <path
+                                                    d="M120-120v-190l358-358-58-56 58-56 76 76 124-124q5-5 12.5-8t15.5-3q8 0 15 3t13 8l94 94q5 6 8 13t3 15q0 8-3 15.5t-8 12.5L705-555l76 78-57 57-56-58-358 358H120Zm80-80h78l332-334-76-76-334 332v78Zm447-410 96-96-37-37-96 96 37 37Zm0 0-37-37 37 37Z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="control-row simple-fill" id="simpleFillGroup" style="display: none;">
-                                <label class="checkbox-label label-small">
-                                    <input type="checkbox" id="manualColorCheckbox"> Manual Color
-                                </label>
-                                <input type="color" id="fillColorInput" value="#ffffff" disabled title="Fill Color">
-                            </div>
+                            <!-- Removed old simpleFillGroup -->
 
                             <div class="selected-actions">
                                 <button class="btn btn-small btn-secondary" id="undoEditBtn" aria-label="復原"

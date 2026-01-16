@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastTextColor = '#000000';
     let lastIsBold = false;
     let lastIsItalic = false;
+    let lastInpaintMethod = 'lama';
+    let lastFillColor = '#ffffff';
 
     // Add Listener for Remove Text Checkbox
     const removeTextCheckbox = document.getElementById('removeTextCheckbox');
@@ -131,6 +133,40 @@ document.addEventListener('DOMContentLoaded', () => {
         const globalToggle = document.getElementById('toggleBoxesBtn');
         if (globalToggle) globalToggle.style.display = 'none';
 
+        const inpaintMethodSelect = document.getElementById('inpaintMethodSelect');
+        const fillColorInput = document.getElementById('fillColorInput');
+        const autoColorBtn = document.getElementById('autoColorBtn');
+
+        if (inpaintMethodSelect) {
+            inpaintMethodSelect.addEventListener('change', () => {
+                lastInpaintMethod = inpaintMethodSelect.value;
+                updateFillControlsState();
+            });
+        }
+
+        if (autoColorBtn) {
+            autoColorBtn.addEventListener('click', () => {
+                if (!currentSelection) return;
+                const { pageIndex, blockId } = currentSelection;
+                const block = pageData[pageIndex].blocks.find(b => b.id === blockId);
+                const img = document.getElementById(`pageImg-${pageIndex}`);
+
+                const color = getAverageBorderColor(img, block.bbox);
+                const hex = rgbToHex(color.r, color.g, color.b);
+                document.getElementById('fillColorInput').value = hex;
+                lastFillColor = hex; // Update remembered color immediately on auto-pick
+            });
+        }
+
+        function updateFillControlsState() {
+            const method = document.getElementById('inpaintMethodSelect').value;
+            const isEnabled = !document.getElementById('selectedInput').disabled; // Proxy for panel enabled
+            const isSimple = method === 'simple_filled';
+
+            if (fillColorInput) fillColorInput.disabled = !isEnabled || !isSimple;
+            if (autoColorBtn) autoColorBtn.disabled = !isEnabled || !isSimple;
+        }
+
         // Disable Controls initially
         setEditPanelEnabled(false);
     }
@@ -145,9 +181,18 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('textColorInput').disabled = !enabled;
         document.getElementById('boldCheckbox').disabled = !enabled;
         document.getElementById('italicCheckbox').disabled = !enabled;
+        const inpaintMethodSelect = document.getElementById('inpaintMethodSelect');
+        const fillColorInput = document.getElementById('fillColorInput');
+        const autoColorBtn = document.getElementById('autoColorBtn');
+
         if (inpaintMethodSelect) inpaintMethodSelect.disabled = !enabled;
-        if (manualColorCheckbox) manualColorCheckbox.disabled = !enabled;
-        if (fillColorInput) fillColorInput.disabled = !enabled || !manualColorCheckbox.checked;
+
+        // Logic for fill controls: Enabled only if panel enabled AND method is simple_filled
+        const method = inpaintMethodSelect ? inpaintMethodSelect.value : 'lama'; // Default to lama if select not found
+        const isSimple = method === 'simple_filled';
+
+        if (fillColorInput) fillColorInput.disabled = !enabled || !isSimple;
+        if (autoColorBtn) autoColorBtn.disabled = !enabled || !isSimple;
 
         applyEditBtn.disabled = !enabled;
         if (undoEditBtn) undoEditBtn.disabled = !enabled;
@@ -383,6 +428,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('boldCheckbox').checked = mod ? mod.is_bold : lastIsBold;
         document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : lastIsItalic;
 
+
+        // Inpaint Settings
+        const method = mod ? (mod.inpaint_method || 'lama') : lastInpaintMethod;
+        const fillColor = mod ? (mod.fill_color || '#ffffff') : lastFillColor;
+
+        const inpaintMethodSelect = document.getElementById('inpaintMethodSelect');
+        const fillColorInput = document.getElementById('fillColorInput');
+
+        if (inpaintMethodSelect) {
+            inpaintMethodSelect.value = method;
+        }
+
+        if (fillColorInput) {
+            fillColorInput.value = fillColor;
+        }
+
+        // Trigger state update for fill controls based on method
+        const autoColorBtn = document.getElementById('autoColorBtn');
+        const isSimple = method === 'simple_filled';
+        // Note: Controls enabled state is also governed by panel enabled state, 
+        // but here we just sync immediate method logic if panel is already enabling.
+        // Actually, setEditPanelEnabled(true) is called above.
+        // We should just ensure specific control logic is correct.
+        if (fillColorInput) fillColorInput.disabled = !isSimple;
+        if (autoColorBtn) autoColorBtn.disabled = !isSimple;
         selectedInput.focus();
 
         updateUndoButtonState(!!mod);
@@ -447,9 +517,19 @@ document.addEventListener('DOMContentLoaded', () => {
         lastIsBold = isBold;
         lastIsItalic = isItalic;
 
+        const inpaintMethodSelect = document.getElementById('inpaintMethodSelect');
+        const fillColorInput = document.getElementById('fillColorInput');
+
         const inpaintMethod = inpaintMethodSelect ? inpaintMethodSelect.value : 'lama';
-        const isManualColor = manualColorCheckbox && manualColorCheckbox.checked;
-        const fillColor = isManualColor ? fillColorInput.value : null;
+        // For simple_filled, always take the color input value
+        // For lama, we send null (or valid color if user wants to play safe, but logic says if lama, color ignored)
+        const fillColor = (inpaintMethod === 'simple_filled') ? fillColorInput.value : null;
+
+        // Remember Settings
+        lastInpaintMethod = inpaintMethod;
+        if (inpaintMethod === 'simple_filled') {
+            lastFillColor = fillColorInput.value;
+        }
 
         pageData[pageIndex].modifications.set(blockId, {
             bbox: block.bbox,
@@ -579,5 +659,58 @@ document.addEventListener('DOMContentLoaded', () => {
     if (oldToggle) {
         oldToggle.replaceWith(oldToggle.cloneNode(true)); // remove listeners and hide
         document.getElementById('toggleBoxesBtn').style.display = 'none';
+    }
+    // Helper functions for Average Color
+    function getAverageBorderColor(img, bbox) {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+
+        const x = Math.floor(bbox[0]);
+        const y = Math.floor(bbox[1]);
+        const w = Math.floor(bbox[2]);
+        const h = Math.floor(bbox[3]);
+        const pad = 3;
+
+        // Define border regions
+        const regions = [
+            { x: x - pad, y: y - pad, w: w + 2 * pad, h: pad }, // Top
+            { x: x - pad, y: y + h, w: w + 2 * pad, h: pad },   // Bottom
+            { x: x - pad, y: y, w: pad, h: h },           // Left
+            { x: x + w, y: y, w: pad, h: h }              // Right
+        ];
+
+        let totalR = 0, totalG = 0, totalB = 0, count = 0;
+
+        regions.forEach(r => {
+            // Clip to image bounds
+            const rx = Math.max(0, r.x);
+            const ry = Math.max(0, r.y);
+            const rw = Math.min(canvas.width - rx, r.w);
+            const rh = Math.min(canvas.height - ry, r.h);
+
+            if (rw > 0 && rh > 0) {
+                const data = ctx.getImageData(rx, ry, rw, rh).data;
+                for (let i = 0; i < data.length; i += 4) {
+                    totalR += data[i];
+                    totalG += data[i + 1];
+                    totalB += data[i + 2];
+                    count++;
+                }
+            }
+        });
+
+        if (count === 0) return { r: 255, g: 255, b: 255 };
+        return {
+            r: Math.round(totalR / count),
+            g: Math.round(totalG / count),
+            b: Math.round(totalB / count)
+        };
+    }
+
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
 });
