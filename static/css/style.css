@@ -215,14 +215,13 @@ h3 {
 .edit-controls {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    margin: 0.1rem 0;
+    margin: 0.5rem 0;
 }
 
 .control-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    margin: 0.5rem 0;
 }
 
 .control-group label {
@@ -260,7 +259,7 @@ h3 {
     padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: 0.5rem;
-    margin: 0.25rem 0 0.5rem 0;
+    margin: 0 0 0.5rem 0;
     /* Reduced top margin */
     font-family: inherit;
     resize: vertical;
@@ -353,7 +352,7 @@ h3 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.5rem;
+    margin-top: 0.8rem;
     white-space: nowrap;
     /* Prevent wrapping */
 }
