@@ -239,6 +239,7 @@ h3 {
 .style-toggles {
     display: flex;
     gap: 1rem;
+    margin: 0.2rem 0 0 0;
 }
 
 .page-header {
