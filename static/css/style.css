@@ -430,7 +430,13 @@ h3 {
 }
 
 .control-row.inpaint-settings {
-    margin-bottom: 10px;
+    margin-bottom: 0px;
+    gap: 8px;
+    align-items: center;
+}
+
+.control-row.fillsize-settings {
+    margin-bottom: 0.5rem;
     gap: 8px;
     align-items: center;
 }

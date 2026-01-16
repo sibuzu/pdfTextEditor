@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastIsItalic = false;
     let lastInpaintMethod = 'lama';
     let lastFillColor = '#ffffff';
+    let lastFillSize = '100%';
 
     // Add Listener for Remove Text Checkbox
     const removeTextCheckbox = document.getElementById('removeTextCheckbox');
@@ -158,6 +159,48 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        const fillSizeInput = document.getElementById('fillSizeInput');
+        if (fillSizeInput) {
+            fillSizeInput.addEventListener('input', () => {
+                if (!currentSelection) return;
+                const { pageIndex, blockId } = currentSelection;
+                const block = pageData[pageIndex].blocks.find(b => b.id === blockId);
+                const img = document.getElementById(`pageImg-${pageIndex}`);
+                const div = document.querySelector(`.bbox[data-id="${blockId}"]`);
+
+                if (!block || !img || !div) return;
+
+                let val = fillSizeInput.value.trim();
+                let scale = 1.0;
+                if (val.endsWith('%')) val = val.slice(0, -1);
+                if (val && !isNaN(val)) scale = parseFloat(val) / 100;
+
+                // Re-calc bbox visual
+                const renderedWidth = img.offsetWidth;
+                const naturalWidth = img.naturalWidth;
+                const scaleX = renderedWidth / naturalWidth;
+
+                const renderedHeight = img.offsetHeight;
+                const naturalHeight = img.naturalHeight;
+                const scaleY = renderedHeight / naturalHeight;
+
+                const baseW = block.bbox[2];
+                const baseH = block.bbox[3];
+                const cx = block.bbox[0] + baseW / 2;
+                const cy = block.bbox[1] + baseH / 2;
+
+                const newW = baseW * scale;
+                const newH = baseH * scale;
+                const newX = cx - newW / 2;
+                const newY = cy - newH / 2;
+
+                div.style.left = (newX * scaleX) + 'px';
+                div.style.top = (newY * scaleY) + 'px';
+                div.style.width = (newW * scaleX) + 'px';
+                div.style.height = (newH * scaleY) + 'px';
+            });
+        }
+
         function updateFillControlsState() {
             const method = document.getElementById('inpaintMethodSelect').value;
             const isEnabled = !document.getElementById('selectedInput').disabled; // Proxy for panel enabled
@@ -184,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inpaintMethodSelect = document.getElementById('inpaintMethodSelect');
         const fillColorInput = document.getElementById('fillColorInput');
         const autoColorBtn = document.getElementById('autoColorBtn');
+        const fillSizeInput = document.getElementById('fillSizeInput');
 
         if (inpaintMethodSelect) inpaintMethodSelect.disabled = !enabled;
 
@@ -193,6 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (fillColorInput) fillColorInput.disabled = !enabled || !isSimple;
         if (autoColorBtn) autoColorBtn.disabled = !enabled || !isSimple;
+        if (fillSizeInput) fillSizeInput.disabled = !enabled;
 
         applyEditBtn.disabled = !enabled;
         if (undoEditBtn) undoEditBtn.disabled = !enabled;
@@ -200,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!enabled) {
             selectedInput.value = '';
             document.getElementById('fontSizeInput').value = '';
+            if (fillSizeInput) fillSizeInput.value = '100%';
             document.getElementById('offsetXInput').value = '0';
             document.getElementById('offsetYInput').value = '0';
         }
@@ -295,12 +341,31 @@ document.addEventListener('DOMContentLoaded', () => {
             container.style.display = pageData[pageIndex].visible ? 'block' : 'none';
 
             blocks.forEach(block => {
+                const mod = pageData[pageIndex].modifications.get(block.id);
+                let fillScale = 1.0;
+                if (mod && mod.fill_size) {
+                    let val = String(mod.fill_size).trim();
+                    if (val.endsWith('%')) val = val.slice(0, -1);
+                    if (val && !isNaN(val)) fillScale = parseFloat(val) / 100.0;
+                }
+
+                // Calculate scaled bbox (centering logic)
+                const baseW = block.bbox[2];
+                const baseH = block.bbox[3];
+                const cx = block.bbox[0] + baseW / 2;
+                const cy = block.bbox[1] + baseH / 2;
+
+                const newW = baseW * fillScale;
+                const newH = baseH * fillScale;
+                const newX = cx - newW / 2;
+                const newY = cy - newH / 2;
+
                 const div = document.createElement('div');
                 div.className = 'bbox';
-                div.style.left = (block.bbox[0] * scaleX) + 'px';
-                div.style.top = (block.bbox[1] * scaleY) + 'px';
-                div.style.width = (block.bbox[2] * scaleX) + 'px';
-                div.style.height = (block.bbox[3] * scaleY) + 'px';
+                div.style.left = (newX * scaleX) + 'px';
+                div.style.top = (newY * scaleY) + 'px';
+                div.style.width = (newW * scaleX) + 'px';
+                div.style.height = (newH * scaleY) + 'px';
                 div.style.pointerEvents = 'auto'; // Re-enable clicks
                 div.dataset.id = block.id;
                 div.title = block.text;
@@ -429,12 +494,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('italicCheckbox').checked = mod ? mod.is_italic : lastIsItalic;
 
 
-        // Inpaint Settings
         const method = mod ? (mod.inpaint_method || 'lama') : lastInpaintMethod;
         const fillColor = mod ? (mod.fill_color || '#ffffff') : lastFillColor;
 
         const inpaintMethodSelect = document.getElementById('inpaintMethodSelect');
         const fillColorInput = document.getElementById('fillColorInput');
+        const fillSizeInput = document.getElementById('fillSizeInput');
+
+        if (fillSizeInput) {
+            fillSizeInput.value = mod ? (mod.fill_size || '100%') : lastFillSize;
+        }
 
         if (inpaintMethodSelect) {
             inpaintMethodSelect.value = method;
@@ -504,6 +573,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (/^\d+$/.test(fontSizeVal)) fontSizeVal += "%"; // Auto append % if number
         if (/^\d+$/.test(fontSizeVal)) fontSizeVal += "%"; // Auto append % if number
         const fontSize = fontSizeVal;
+
+        let fillSizeVal = document.getElementById('fillSizeInput').value.trim();
+        if (!fillSizeVal) fillSizeVal = "100%";
+        if (/^\d+$/.test(fillSizeVal)) fillSizeVal += "%"; // Auto append %
+        const fillSize = fillSizeVal;
+
         const offsetX = parseInt(document.getElementById('offsetXInput').value) || 0;
         const offsetY = parseInt(document.getElementById('offsetYInput').value) || 0;
         const textColor = document.getElementById('textColorInput').value;
@@ -527,6 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Remember Settings
         lastInpaintMethod = inpaintMethod;
+        lastFillSize = fillSize;
         if (inpaintMethod === 'simple_filled') {
             lastFillColor = fillColorInput.value;
         }
@@ -541,8 +617,10 @@ document.addEventListener('DOMContentLoaded', () => {
             is_italic: isItalic,
             offset_x: offsetX,
             offset_y: offsetY,
+            offset_y: offsetY,
             inpaint_method: inpaintMethod,
             fill_color: fillColor,
+            fill_size: fillSize,
             is_removed: isRemove
         });
 

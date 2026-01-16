@@ -77,6 +77,17 @@
                 <div class="sidebar">
                     <div class="edit-panel">
                         <div class="panel-header">
+                            <h3>投影片</h3>
+                        </div>
+                        <div class="panel-actions">
+                            <button class="btn btn-primary" id="newSliderBtn" aria-label="編輯新投影片"
+                                data-i18n="common.download">編輯新檔</button>
+                            <button class="btn btn-primary" id="downloadBtn" aria-label="下載編輯後的檔案"
+                                data-i18n="common.download">匯出投影片</button>
+                        </div>
+                    </div>
+                    <div class="edit-panel">
+                        <div class="panel-header">
                             <h3 data-i18n="editor.results">辨識結果</h3>
                             <div class="panel-header-actions">
                                 <span class="region-count" id="regionCount">0 個文字區域</span>
@@ -171,7 +182,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- Removed old simpleFillGroup -->
+                            <!-- Fill Size Row -->
+                            <div class="control-row fillsize-settings" style="align-items: center;">
+                                <div class="control-group"
+                                    style="display: flex; flex-direction: row; align-items: center; width: 100%;">
+                                    <label style="margin-right: 8px; white-space: nowrap;">Fill Size</label>
+                                    <input type="text" id="fillSizeInput" placeholder="100%" class="font-size-input"
+                                        style="flex-grow: 1; width: auto; text-align: center;">
+                                </div>
+                            </div>
 
                             <div class="selected-actions">
                                 <button class="btn btn-small btn-secondary" id="undoEditBtn" aria-label="復原"
@@ -186,15 +205,6 @@
 
                     </div>
 
-                    <div class="edit-panel">
-                        <div class="panel-header">
-                            <h3>匯出文件</h3>
-                        </div>
-                        <div class="panel-actions">
-                            <button class="btn btn-primary" id="downloadBtn" aria-label="下載編輯後的檔案"
-                                data-i18n="common.download">Download</button>
-                        </div>
-                    </div>
                 </div>
             </div>
 

@@ -177,6 +177,7 @@ class EditSpec(BaseModel):
     fill_color: Optional[str] = None
     offset_x: int = 0
     offset_y: int = 0
+    fill_size: Optional[Union[str, float, int]] = "100%"
 
 class UpdatePageRequest(BaseModel):
     session_id: str
@@ -212,6 +213,7 @@ async def update_page(request: UpdatePageRequest):
                 fill_color=edit.fill_color,
                 offset_x=edit.offset_x,
                 offset_y=edit.offset_y,
+                fill_size=edit.fill_size,
                 restore_first=False
             )
         

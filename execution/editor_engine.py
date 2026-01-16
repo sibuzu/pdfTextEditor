@@ -2,7 +2,7 @@ import logging
 import os
 import shutil
 import threading
-from typing import Tuple, List, Optional
+from typing import Tuple, List, Optional, Union
 from PIL import Image, ImageDraw, ImageFont
 
 try:
@@ -197,6 +197,7 @@ def apply_edit(image_path: str, bbox: list, text: str,
                fill_color: Optional[str] = None,
                offset_x: int = 0,
                offset_y: int = 0,
+               fill_size: Optional[Union[str, float, int]] = "100%",
                restore_first: bool = False) -> str:
     """
     Applies text edit to the image.
@@ -221,20 +222,47 @@ def apply_edit(image_path: str, bbox: list, text: str,
     # Only inpaint if we have text to write or if we explicitly want to clear the area
     # Even if empty text, we probably want to clear the old text (inpaint).
     
+    # Calculate Fill Scale Factor
+    fill_scale = 1.0
+    if fill_size is not None:
+        try:
+            if isinstance(fill_size, str) and fill_size.strip().endswith("%"):
+                fill_scale = float(fill_size.strip().rstrip("%")) / 100.0
+            elif isinstance(fill_size, (int, float)):
+                fill_scale = float(fill_size) / 100.0
+        except ValueError:
+            logger.warning(f"Invalid fill_size: {fill_size}, defaulting to 100%")
+
+    # Calculate Expanded BBox for Inpainting/Filling
+    # Center remains the same, W and H grow
+    x, y, w, h = [int(v) for v in bbox]
+    cx, cy = x + w / 2, y + h / 2
+    
+    fill_w = int(w * fill_scale)
+    fill_h = int(h * fill_scale)
+    fill_x = int(cx - fill_w / 2)
+    fill_y = int(cy - fill_h / 2)
+    
+    expanded_bbox = [fill_x, fill_y, fill_w, fill_h]
+
     mask = Image.new("L", img.size, 0)
     draw_mask = ImageDraw.Draw(mask)
-    x, y, w, h = [int(v) for v in bbox]
-    pad = 5
-    draw_mask.rectangle([x - pad, y - pad, x + w + pad, y + h + pad], fill=255)
     
-    model = get_lama_model()
-    
+    pad = 5 # Pad is applied ON TOP of the expanded bbox for LaMa to be safe
+    # If using simple fill, we use expanded_bbox exactly
     if inpaint_method == "simple_filled":
-        img = apply_simple_fill(img, bbox, fill_color)
+        # Pass [x, y, w, h] format to simple_fill? 
+        # apply_simple_fill expects [x, y, w, h]
+        # It currently takes 'bbox' which is [x,y,w,h]
+        # So we pass expanded_bbox (x,y,w,h)
+        img = apply_simple_fill(img, expanded_bbox, fill_color)
     else:
-        # Default LaMa
-        logger.info(f"Inpainting region {bbox} with LaMa...")
-        # Lock for thread safety during inference
+        # LaMa
+        # Draw mask with padding on expanded area
+        draw_mask.rectangle([fill_x - pad, fill_y - pad, fill_x + fill_w + pad, fill_y + fill_h + pad], fill=255)
+        
+        model = get_lama_model()
+        logger.info(f"Inpainting region {expanded_bbox} (Orig: {bbox}) with LaMa...")
         with _lama_lock:
             img = model(img, mask) 
 
